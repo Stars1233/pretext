@@ -116,17 +116,17 @@ function runSweep(): { total: number, mismatches: Mismatch[] } {
           div.textContent = text
           container.appendChild(div)
           divs.push(div)
-          prepared.push(prepareWithSegments(text, font, lineHeight))
+          prepared.push(prepareWithSegments(text, font))
         }
 
         for (let i = 0; i < TEXTS.length; i++) {
           const text = TEXTS[i]!.text
           const actual = divs[i]!.getBoundingClientRect().height
-          const predicted = layout(prepared[i]!, maxWidth).height
+          const predicted = layout(prepared[i]!, maxWidth, lineHeight).height
           total++
           if (Math.abs(actual - predicted) >= 1) {
             const browserLines = getBrowserLines(prepared[i]!, divs[i]!)
-            const ourLayout = layoutWithLines(prepared[i]!, maxWidth)
+            const ourLayout = layoutWithLines(prepared[i]!, maxWidth, lineHeight)
 
             const lineDetails: string[] = []
             const maxLines = Math.max(browserLines.length, ourLayout.lines.length)

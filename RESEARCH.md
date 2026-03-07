@@ -14,7 +14,7 @@ Canvas `measureText()` bypasses the DOM layout engine entirely. It goes straight
 
 Two-phase design:
 - `prepare(text, font)` — segment text, measure each word via canvas, cache widths
-- `layout(prepared, maxWidth)` — walk cached widths, count lines. Pure arithmetic.
+- `layout(prepared, maxWidth, lineHeight)` — walk cached widths, count lines, compute height. Pure arithmetic.
 
 On resize (width changes), only `layout()` runs. No canvas calls, no DOM, no strings. ~0.0002ms per text block.
 

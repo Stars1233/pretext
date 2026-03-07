@@ -2,8 +2,7 @@ import { prepare, type PreparedText } from '../src/layout.ts'
 
 // Layout with max-line-width tracking for shrinkwrap.
 // Same algorithm as layout(), but also returns the widest actual line width.
-function layoutShrinkwrap(prepared: PreparedText, maxWidth: number, lineHeight?: number): { lineCount: number, height: number, maxLineWidth: number } {
-  if (lineHeight === undefined) lineHeight = prepared.lineHeight
+function layoutShrinkwrap(prepared: PreparedText, maxWidth: number, lineHeight: number): { lineCount: number, height: number, maxLineWidth: number } {
   const { widths, isSpace: isSp, breakableWidths } = prepared
   if (widths.length === 0) return { lineCount: 0, height: 0, maxLineWidth: 0 }
 
@@ -110,7 +109,7 @@ const bubbles: BubbleState[] = []
 
 for (let i = 0; i < messages.length; i++) {
   const m = messages[i]!
-  const prepared = prepare(m.text, FONT, LINE_HEIGHT)
+  const prepared = prepare(m.text, FONT)
 
   const shrinkDiv = document.createElement('div')
   shrinkDiv.className = `msg ${m.sent ? 'sent' : 'recv'}`

@@ -9,8 +9,9 @@
 //   prepare(text, font) — segments text via Intl.Segmenter, measures each word
 //     via canvas, caches widths, and does one cached DOM calibration read per
 //     font when emoji correction is needed. Call once when text first appears.
-//   layout(prepared, maxWidth) — walks cached word widths with pure arithmetic
-//     to count lines and compute height. Call on every resize. ~0.0002ms per text.
+//   layout(prepared, maxWidth, lineHeight) — walks cached word widths with pure
+//     arithmetic to count lines and compute height. Call on every resize.
+//     ~0.0002ms per text.
 //
 // i18n: Intl.Segmenter handles CJK (per-character breaking), Thai, Arabic, etc.
 //   Bidi: Unicode Bidirectional Algorithm for mixed LTR/RTL text.
@@ -338,7 +339,6 @@ export type PreparedText = {
   isSpace: boolean[]
   segLevels: Int8Array | null
   breakableWidths: (number[] | null)[]
-  lineHeight: number
 }
 
 export type PreparedTextWithSegments = PreparedText & {
@@ -356,20 +356,15 @@ export type LayoutLine = {
 }
 
 export type LayoutLinesResult = LayoutResult & {
-  lineHeight: number
   lines: LayoutLine[]
 }
 
 // --- Public API ---
 
-function prepareInternal(text: string, font: string, lineHeight: number | undefined, includeSegments: boolean): PreparedText | PreparedTextWithSegments {
+function prepareInternal(text: string, font: string, includeSegments: boolean): PreparedText | PreparedTextWithSegments {
   ctx.font = font
   const cache = getWordCache(font)
   const fontSize = parseFontSize(font)
-
-  if (lineHeight === undefined) {
-    lineHeight = Math.round(fontSize * 1.2)
-  }
 
   const emojiCorrection = getEmojiCorrection(font, fontSize)
 
@@ -378,9 +373,9 @@ function prepareInternal(text: string, font: string, lineHeight: number | undefi
 
   if (normalized.length === 0 || normalized.trim().length === 0) {
     if (includeSegments) {
-      return { widths: [], isSpace: [], segLevels: null, breakableWidths: [], lineHeight, segments: [] }
+      return { widths: [], isSpace: [], segLevels: null, breakableWidths: [], segments: [] }
     }
-    return { widths: [], isSpace: [], segLevels: null, breakableWidths: [], lineHeight }
+    return { widths: [], isSpace: [], segLevels: null, breakableWidths: [] }
   }
 
   // Output arrays — segments get pushed here after merging/splitting.
@@ -511,15 +506,15 @@ function prepareInternal(text: string, font: string, lineHeight: number | undefi
   }
 
   if (segments !== null) {
-    return { widths, isSpace, segLevels, breakableWidths, lineHeight, segments }
+    return { widths, isSpace, segLevels, breakableWidths, segments }
   }
-  return { widths, isSpace, segLevels, breakableWidths, lineHeight }
+  return { widths, isSpace, segLevels, breakableWidths }
 }
 
 // Prepare text for layout. Segments the text, measures each segment via canvas,
 // and stores the widths for fast relayout at any width. Call once per text block
 // (e.g. when a comment first appears). The result is width-independent — the
-// same PreparedText can be laid out at any maxWidth via layout().
+// same PreparedText can be laid out at any maxWidth and lineHeight via layout().
 //
 // Steps:
 //   1. Normalize newlines to spaces (CSS white-space: normal behavior)
@@ -530,26 +525,26 @@ function prepareInternal(text: string, font: string, lineHeight: number | undefi
 //   6. Pre-measure graphemes of long words (for overflow-wrap: break-word)
 //   7. Correct emoji canvas inflation (auto-detected per font size)
 //   8. Compute bidi embedding levels for mixed-direction text
-export function prepare(text: string, font: string, lineHeight?: number): PreparedText {
-  return prepareInternal(text, font, lineHeight, false) as PreparedText
+export function prepare(text: string, font: string): PreparedText {
+  return prepareInternal(text, font, false) as PreparedText
 }
 
 // Rich variant used by callers that need enough information to render the
 // laid-out lines themselves.
-export function prepareWithSegments(text: string, font: string, lineHeight?: number): PreparedTextWithSegments {
-  return prepareInternal(text, font, lineHeight, true) as PreparedTextWithSegments
+export function prepareWithSegments(text: string, font: string): PreparedTextWithSegments {
+  return prepareInternal(text, font, true) as PreparedTextWithSegments
 }
 
-// Layout prepared text at a given max width. Pure arithmetic on cached widths —
-// no canvas calls, no DOM reads, no string operations, no allocations.
+// Layout prepared text at a given max width and caller-provided lineHeight.
+// Pure arithmetic on cached widths — no canvas calls, no DOM reads, no string
+// operations, no allocations.
 // ~0.0002ms per text block. Call on every resize.
 //
 // Line breaking rules (matching CSS white-space: normal + overflow-wrap: break-word):
 //   - Break before any non-space segment that would overflow the line
 //   - Trailing whitespace hangs past the line edge (doesn't trigger breaks)
 //   - Segments wider than maxWidth are broken at grapheme boundaries
-export function layout(prepared: PreparedText, maxWidth: number, lineHeight?: number): LayoutResult {
-  if (lineHeight === undefined) lineHeight = prepared.lineHeight
+export function layout(prepared: PreparedText, maxWidth: number, lineHeight: number): LayoutResult {
   const { widths, isSpace: isSp, breakableWidths } = prepared
   if (widths.length === 0) return { lineCount: 0, height: 0 }
 
@@ -618,13 +613,13 @@ export function layout(prepared: PreparedText, maxWidth: number, lineHeight?: nu
 }
 
 // Rich layout API for callers that want the actual line contents and widths.
-// Mirrors layout()'s break decisions, but keeps extra per-line bookkeeping so it
-// should stay off the resize hot path.
-export function layoutWithLines(prepared: PreparedTextWithSegments, maxWidth: number, lineHeight?: number): LayoutLinesResult {
-  if (lineHeight === undefined) lineHeight = prepared.lineHeight
+// Caller still supplies lineHeight at layout time. Mirrors layout()'s break
+// decisions, but keeps extra per-line bookkeeping so it should stay off the
+// resize hot path.
+export function layoutWithLines(prepared: PreparedTextWithSegments, maxWidth: number, lineHeight: number): LayoutLinesResult {
   const { widths, isSpace: isSp, breakableWidths, segments } = prepared
   const lines: LayoutLine[] = []
-  if (widths.length === 0) return { lineCount: 0, height: 0, lineHeight, lines }
+  if (widths.length === 0) return { lineCount: 0, height: 0, lines }
 
   let lineCount = 0
   let lineW = 0
@@ -713,7 +708,7 @@ export function layoutWithLines(prepared: PreparedTextWithSegments, maxWidth: nu
     pushCurrentLine()
   }
 
-  return { lineCount, height: lineCount * lineHeight, lineHeight, lines }
+  return { lineCount, height: lineCount * lineHeight, lines }
 }
 
 export function clearCache(): void {

@@ -67,7 +67,7 @@ async function run() {
   // Pre-prepare for layout benchmark
   const prepared: PreparedText[] = []
   for (let i = 0; i < COUNT; i++) {
-    prepared.push(prepare(texts[i]!, FONT, LINE_HEIGHT))
+    prepared.push(prepare(texts[i]!, FONT))
   }
 
   type Result = { label: string, ms: number, desc: string }
@@ -79,7 +79,7 @@ async function run() {
   const tPrepare = bench(() => {
     clearCache()
     for (let i = 0; i < COUNT; i++) {
-      prepare(texts[i]!, FONT, LINE_HEIGHT)
+      prepare(texts[i]!, FONT)
     }
   })
   results.push({ label: 'Our library: prepare()', ms: tPrepare, desc: 'Segment + measure (one-time)' })
@@ -89,7 +89,7 @@ async function run() {
   await nextFrame()
   const tLayout = bench(() => {
     for (let i = 0; i < COUNT; i++) {
-      layout(prepared[i]!, WIDTH_AFTER)
+      layout(prepared[i]!, WIDTH_AFTER, LINE_HEIGHT)
     }
   })
   results.push({ label: 'Our library: layout()', ms: tLayout, desc: 'Pure arithmetic (resize hot path)' })
@@ -186,20 +186,20 @@ async function run() {
     // prepare (cold)
     const pTimes = { cjk: [] as number[], lat: [] as number[] }
     for (let r = 0; r < 15; r++) {
-      clearCache(); let t0 = performance.now(); prepare(cjk, FONT, LINE_HEIGHT); pTimes.cjk.push(performance.now() - t0)
-      clearCache(); t0 = performance.now(); prepare(lat, FONT, LINE_HEIGHT); pTimes.lat.push(performance.now() - t0)
+      clearCache(); let t0 = performance.now(); prepare(cjk, FONT); pTimes.cjk.push(performance.now() - t0)
+      clearCache(); t0 = performance.now(); prepare(lat, FONT); pTimes.lat.push(performance.now() - t0)
     }
 
     // layout (1000x for resolution)
     clearCache()
-    const pc = prepare(cjk, FONT, LINE_HEIGHT)
-    const pl = prepare(lat, FONT, LINE_HEIGHT)
+    const pc = prepare(cjk, FONT)
+    const pl = prepare(lat, FONT)
     const cSegs = pc.widths.length
     const lSegs = pl.widths.length
     const lTimes = { cjk: [] as number[], lat: [] as number[] }
     for (let r = 0; r < 15; r++) {
-      let t0 = performance.now(); for (let j = 0; j < 1000; j++) layout(pc, WIDTH_AFTER); lTimes.cjk.push((performance.now() - t0) / 1000)
-      t0 = performance.now(); for (let j = 0; j < 1000; j++) layout(pl, WIDTH_AFTER); lTimes.lat.push((performance.now() - t0) / 1000)
+      let t0 = performance.now(); for (let j = 0; j < 1000; j++) layout(pc, WIDTH_AFTER, LINE_HEIGHT); lTimes.cjk.push((performance.now() - t0) / 1000)
+      t0 = performance.now(); for (let j = 0; j < 1000; j++) layout(pl, WIDTH_AFTER, LINE_HEIGHT); lTimes.lat.push((performance.now() - t0) / 1000)
     }
 
     cjkRows.push(`<tr>

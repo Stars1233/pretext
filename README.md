@@ -14,13 +14,13 @@ Two-phase measurement centered around canvas `measureText()`:
 import { prepare, layout } from './src/layout.ts'
 
 // Phase 1: measure word widths (once, when text appears)
-const block = prepare(commentText, '16px Inter', 19)
+const block = prepare(commentText, '16px Inter')
 
 // Phase 2: compute height at any width (pure arithmetic, on every resize)
-const { height, lineCount } = layout(block, containerWidth)
+const { height, lineCount } = layout(block, containerWidth, 19)
 ```
 
-`prepare()` segments text via `Intl.Segmenter`, measures each word via canvas, and caches the widths. On browsers that need emoji correction, it also does one cached DOM calibration read per font. `layout()` walks the cached widths to count lines — no canvas, no DOM, no string operations. Each `layout()` call is ~0.0002ms.
+`prepare()` segments text via `Intl.Segmenter`, measures each word via canvas, and caches the widths. On browsers that need emoji correction, it also does one cached DOM calibration read per font. `layout()` walks the cached widths to count lines and multiplies by the caller-provided `lineHeight` — no canvas, no DOM, no string operations. Each `layout()` call is ~0.0002ms.
 
 ## Performance
 
@@ -57,6 +57,7 @@ Tested across 4 fonts (Helvetica Neue, Georgia, Verdana, Courier New) × 8 sizes
 ## Known limitations
 
 - **CSS config**: targets the default (`white-space: normal`, `word-break: normal`, `overflow-wrap: break-word`, `line-break: auto`). Other configurations (`break-all`, `keep-all`, `strict`, `loose`, `anywhere`) are untested.
+- **`line-height`**: the library does not infer CSS line height. Pass the exact value you render with into `layout()` / `layoutWithLines()`. `line-height: normal` differs across fonts and browsers.
 - **`system-ui` font**: canvas and DOM resolve this CSS keyword to different font variants at certain sizes on macOS. Use a named font (Inter, Helvetica, Arial, etc.) for guaranteed accuracy. See [RESEARCH.md](RESEARCH.md#discovery-system-ui-font-resolution-mismatch).
 - **Server-side**: requires a canvas implementation (browser, or `@napi-rs/canvas` with registered fonts). Headless tests use HarfBuzz (WASM) instead.
 

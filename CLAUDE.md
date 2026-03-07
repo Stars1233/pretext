@@ -31,7 +31,7 @@ Canvas-first text measurement using canvas `measureText()` + `Intl.Segmenter`. T
 - Kinsoku shori: CJK punctuation merged with adjacent graphemes so they can't be separated across line breaks.
 - Bidi levels are computed during `prepare()` and stored on `PreparedText`; `layout()` currently returns only height/line count and does not consume them yet.
 - CSS config: targets the default (`white-space: normal`, `word-break: normal`, `overflow-wrap: break-word`, `line-break: auto`). Other configurations (e.g. `break-all`, `keep-all`, `strict`, `loose`, `anywhere`) are untested and unsupported.
-- lineHeight default (`round(fontSize * 1.2)`) doesn't match CSS `line-height: normal` for all fonts/browsers. Georgia is off by 1px on Chrome/Safari, Firefox returns fractional values. Always pass explicit lineHeight matching your CSS.
+- `lineHeight` is a layout-time input, not a prepare-time property. Pass the exact CSS line height to `layout()` / `layoutWithLines()`; `line-height: normal` differs across fonts and browsers.
 - system-ui font: Safari OK, Chrome sometimes mismatches (documented), Firefox is catastrophic (48px diff — canvas and DOM resolve to different fonts). Never use system-ui with this library. See [RESEARCH.md](RESEARCH.md#discovery-system-ui-font-resolution-mismatch).
 - Thai: Intl.Segmenter and CSS use different internal dictionaries for word boundaries. Same text, different break points. Causes ~2 mismatches on Firefox. Unfixable from our side.
 - HarfBuzz with explicit LTR for headless tests: guessSegmentProperties assigns wrong direction to isolated Arabic words.
@@ -43,7 +43,7 @@ Chrome 99.96%, Safari 99.92%, Firefox 99.95%, HarfBuzz 100%. 4 fonts × 7680 tes
 ### TODO
 
 - Locale switch: segmenters are hoisted with the default locale. Expose a function to reinitialize them with a new locale without requiring a page refresh (e.g. `setLocale('ja')`). Should also clear the word cache since segmentation boundaries change per locale.
-- Rich layout result: `layout()` currently returns only `{ lineCount, height }`. Return per-line break info (start/end index, width) so callers can render lines themselves (custom text layout, canvas rendering). Data is already computed internally, just discarded.
+- Rich layout API: `layoutWithLines()` currently returns `{ text, width }` per line. We may want line ranges/indices instead so callers can render without materializing substrings.
 - Latin fast path: ASCII-only text (`/^[\x20-\x7E]+$/`) could skip CJK check, kinsoku, bidi, and emoji correction. Most comment feeds are >90% ASCII.
 - Benchmark page: measurement methodology needs review (prepare cold vs warm, visible container sizing).
 - Demo page: visual side-by-side comparison of library vs DOM rendering.
