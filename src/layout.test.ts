@@ -108,6 +108,16 @@ describe('prepare invariants', () => {
     expect(prepared.segments).toEqual(['“Whenever'])
   })
 
+  test('keeps apostrophe-led elisions attached to the following word', () => {
+    const prepared = prepareWithSegments('“Take ’em downstairs', FONT)
+    expect(prepared.segments).toEqual(['“Take', ' ', '’em', ' ', 'downstairs'])
+  })
+
+  test('keeps stacked opening quotes attached to the following word', () => {
+    const prepared = prepareWithSegments('invented, “‘George B. Wilson', FONT)
+    expect(prepared.segments).toEqual(['invented,', ' ', '“‘George', ' ', 'B.', ' ', 'Wilson'])
+  })
+
   test('keeps em dashes breakable', () => {
     const prepared = prepareWithSegments('universe—so', FONT)
     expect(prepared.segments).toEqual(['universe', '—', 'so'])

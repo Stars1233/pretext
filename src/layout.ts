@@ -243,6 +243,12 @@ const kinsokuEnd = new Set([
   '\u301A', // 〚
 ])
 
+// Non-word leading glue that should stay with the following segment in
+// non-CJK text. This covers elisions like ’em.
+const forwardStickyGlue = new Set([
+  "'", '’',
+])
+
 // Non-space punctuation that should stay with the preceding segment in
 // non-CJK text. Keep dash punctuation out of this set so lines may still break
 // before an em dash or hyphenated continuation, matching browser behavior more
@@ -265,6 +271,13 @@ function isLeftStickyPunctuationSegment(segment: string): boolean {
 function isCJKLineStartProhibitedSegment(segment: string): boolean {
   for (const ch of segment) {
     if (!kinsokuStart.has(ch) && !leftStickyPunctuation.has(ch)) return false
+  }
+  return segment.length > 0
+}
+
+function isForwardStickyClusterSegment(segment: string): boolean {
+  for (const ch of segment) {
+    if (!kinsokuEnd.has(ch) && !forwardStickyGlue.has(ch)) return false
   }
   return segment.length > 0
 }
@@ -439,10 +452,14 @@ function buildMergedSegmentation(normalized: string): MergedSegmentation {
   }
 
   for (let i = mergedLen - 2; i >= 0; i--) {
-    if (!mergedSpace[i]! && !mergedWordLike[i]! && mergedTexts[i]!.length === 1 && kinsokuEnd.has(mergedTexts[i]!)) {
-      mergedTexts[i + 1] = mergedTexts[i]! + mergedTexts[i + 1]!
-      mergedStarts[i + 1] = mergedStarts[i]!
-      mergedTexts[i] = ''
+    if (!mergedSpace[i]! && !mergedWordLike[i]! && isForwardStickyClusterSegment(mergedTexts[i]!)) {
+      let j = i + 1
+      while (j < mergedLen && mergedTexts[j] === '') j++
+      if (j < mergedLen) {
+        mergedTexts[j] = mergedTexts[i]! + mergedTexts[j]!
+        mergedStarts[j] = mergedStarts[i]!
+        mergedTexts[i] = ''
+      }
     }
   }
 
