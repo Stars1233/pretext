@@ -281,7 +281,7 @@ function getOurLines(
   measuredFont: string,
 ): ProbeLine[] {
   const result: ProbeLine[] = []
-  const { widths, isSpace: isSp, breakableWidths, segments } = prepared
+  const { widths, kinds, breakableWidths, segments } = prepared
   if (widths.length === 0) return result
 
   let offset = 0
@@ -365,7 +365,7 @@ function getOurLines(
 
     const newW = lineW + w
     if (newW > contentWidth + diagnosticLineFitEpsilon) {
-      if (isSp[i]) {
+      if (kinds[i] === 'space') {
         lineEnd = segEnd
         offset = segEnd
         continue

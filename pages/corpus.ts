@@ -456,7 +456,7 @@ function getOurLines(
   font: string,
 ): DiagnosticLine[] {
   const lines: DiagnosticLine[] = []
-  const { widths, isSpace: isSp, breakableWidths, segments } = prepared
+  const { widths, kinds, breakableWidths, segments } = prepared
   if (widths.length === 0) return lines
 
   let offset = 0
@@ -541,7 +541,7 @@ function getOurLines(
 
     const newW = lineW + w
     if (newW > maxWidth + diagnosticLineFitEpsilon) {
-      if (isSp[i]) {
+      if (kinds[i] === 'space') {
         lineEnd = segEnd
         offset = segEnd
         continue
@@ -640,7 +640,7 @@ function getLineSegments(
         text,
         width: prepared.widths[i]!,
         domWidth: measureDomTextWidth(text, font, direction),
-        isSpace: prepared.isSpace[i]!,
+        isSpace: prepared.kinds[i] === 'space',
       })
     }
     if (offset >= end) break

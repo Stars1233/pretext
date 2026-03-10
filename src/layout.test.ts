@@ -98,6 +98,27 @@ describe('prepare invariants', () => {
     expect(prepared.segments).toEqual(['Hello', ' ', 'World'])
   })
 
+  test('keeps non-breaking spaces as glue instead of collapsing them away', () => {
+    const prepared = prepareWithSegments('Hello\u00A0world', FONT)
+    expect(prepared.segments).toEqual(['Hello\u00A0world'])
+    expect(prepared.kinds).toEqual(['text'])
+  })
+
+  test('keeps standalone non-breaking spaces as visible glue content', () => {
+    const prepared = prepareWithSegments('\u00A0', FONT)
+    expect(prepared.segments).toEqual(['\u00A0'])
+    expect(layout(prepared, 200, LINE_HEIGHT)).toEqual({ lineCount: 1, height: LINE_HEIGHT })
+  })
+
+  test('treats zero-width spaces as explicit break opportunities', () => {
+    const prepared = prepareWithSegments('alpha\u200Bbeta', FONT)
+    expect(prepared.segments).toEqual(['alpha', '\u200B', 'beta'])
+    expect(prepared.kinds).toEqual(['text', 'zero-width-break', 'text'])
+
+    const alphaWidth = prepared.widths[0]!
+    expect(layout(prepared, alphaWidth + 0.1, LINE_HEIGHT).lineCount).toBe(2)
+  })
+
   test('keeps closing punctuation attached to the preceding word', () => {
     const prepared = prepareWithSegments('hello.', FONT)
     expect(prepared.segments).toEqual(['hello.'])
@@ -173,11 +194,16 @@ describe('prepare invariants', () => {
     expect(prepareWithSegments('테스트입니다.', FONT).segments.at(-1)).toBe('다.')
   })
 
+  test('treats astral CJK ideographs as CJK break units', () => {
+    expect(prepareWithSegments('𠀀𠀁', FONT).segments).toEqual(['𠀀', '𠀁'])
+    expect(prepareWithSegments('𠀀。', FONT).segments).toEqual(['𠀀。'])
+  })
+
   test('prepare and prepareWithSegments agree on numeric data', () => {
     const plain = prepare('Alpha beta gamma', FONT)
     const rich = prepareWithSegments('Alpha beta gamma', FONT)
     expect(rich.widths).toEqual(plain.widths)
-    expect(rich.isSpace).toEqual(plain.isSpace)
+    expect(rich.kinds).toEqual(plain.kinds)
     expect(rich.breakableWidths).toEqual(plain.breakableWidths)
     expect(Array.from(rich.segLevels ?? [])).toEqual(Array.from(plain.segLevels ?? []))
   })

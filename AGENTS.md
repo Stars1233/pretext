@@ -27,6 +27,7 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 
 - `prepare()` / `prepareWithSegments()` do horizontal-only work. `layout()` / `layoutWithLines()` take explicit `lineHeight`.
 - `prepare()` is internally split into a text-analysis phase and a measurement phase; keep that seam clear, but keep the public API simple unless requirements force a change.
+- The internal segment model now distinguishes at least four break kinds: normal text, collapsible spaces, non-breaking glue (`NBSP` / `NNBSP` / `WJ`-like runs), and zero-width break opportunities. Do not collapse those back into one boolean unless the model gets richer in a better way.
 - `layout()` is the resize hot path: no DOM reads, no canvas calls, no string work, and avoid gratuitous allocations.
 - Word width cache is `Map<font, Map<segment, width>>`; shared across texts and resettable via `clearCache()`.
 - Word and grapheme segmenters are hoisted at module scope. Any locale reset should also clear the word cache.
@@ -35,6 +36,8 @@ Internal notes for contributors and agents. Use `README.md` as the public source
 - That Arabic no-space merge set is intentionally narrow right now: colon / period / Arabic comma / Arabic semicolon. Repeated `!` was a counterexample that over-merged.
 - If `Intl.Segmenter` emits an Arabic punctuation cluster with trailing combining marks (for example `،ٍ`), still treat the whole cluster as left-sticky punctuation during preprocessing. The browser keeps `بكشء،ٍ` together.
 - If `Intl.Segmenter` emits `" " + combining marks` before Arabic text (for example `كل ِّواحدةٍ`), split it into `" "` plus marks-prefix-on-next-word during preprocessing.
+- `NBSP`-style glue should survive `prepare()` as visible content and prevent ordinary word-boundary wrapping; `ZWSP` should survive as a zero-width break opportunity.
+- Astral CJK ideographs must still hit the CJK path; do not rely on BMP-only `charCodeAt()` checks there.
 - Non-word, non-space segments are break opportunities, same as words.
 - CJK grapheme splitting plus kinsoku merging keeps prohibited punctuation attached to adjacent graphemes.
 - Emoji correction is auto-detected per font size, constant per emoji grapheme, and effectively font-independent.

@@ -3,7 +3,7 @@ import { prepare, type PreparedText } from '../src/layout.ts'
 // Layout with max-line-width tracking for shrinkwrap.
 // Same algorithm as layout(), but also returns the widest actual line width.
 function layoutShrinkwrap(prepared: PreparedText, maxWidth: number, lineHeight: number): { lineCount: number, height: number, maxLineWidth: number } {
-  const { widths, isSpace: isSp, breakableWidths } = prepared
+  const { widths, kinds, breakableWidths } = prepared
   if (widths.length === 0) return { lineCount: 0, height: 0, maxLineWidth: 0 }
 
   let lineCount = 0
@@ -40,7 +40,7 @@ function layoutShrinkwrap(prepared: PreparedText, maxWidth: number, lineHeight: 
     const newW = lineW + w
 
     if (newW > maxWidth) {
-      if (isSp[i]) continue
+      if (kinds[i] === 'space') continue
 
       if (lineW > maxLineWidth) maxLineWidth = lineW
 

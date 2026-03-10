@@ -587,6 +587,41 @@ Browser (canvas measureText, named fonts), 4 fonts × 8 sizes × 8 widths × 30 
 - Safari: 7680/7680 (100%)
 - Firefox: 7680/7680 (100%)
 
+## Break-kind model strengthening
+
+The old internal `isSpace: boolean` model had become too blunt for the remaining text-engine work.
+It compressed several different behaviors into one bit:
+- collapsible spaces that should hang and collapse
+- hard glue like `NBSP` / `NNBSP` / `WJ`
+- zero-width opportunities like `ZWSP`
+
+That was making the implementation harder to reason about and was already hiding real edge cases.
+
+We replaced it with explicit internal segment break kinds:
+- `text`
+- `space`
+- `glue`
+- `zero-width-break`
+
+What that bought us immediately:
+- `NBSP` survives `prepare()` as real visible glue content instead of getting treated like ordinary hanging space
+- `ZWSP` survives as an explicit zero-width break opportunity
+- Arabic combining-mark-only clusters now forward-merge like other leading glue
+- astral CJK ideographs now correctly enter the CJK path instead of being skipped by BMP-only checks
+
+This was a model-strengthening change, not a benchmark tweak. The important verification:
+- `bun test` gained direct invariants for `NBSP`, `ZWSP`, Arabic leading marks, and astral CJK
+- Safari accuracy stayed `7680/7680`
+- Firefox accuracy stayed `7680/7680`
+- coarse corpus sweeps stayed unchanged:
+  - Korean `61/61`
+  - Hindi `61/61`
+  - Arabic `61/61`
+  - Hebrew `61/61`
+  - Thai `59/61`
+
+So the richer break model appears to be a clean keep: better semantics, same solved accuracy field.
+
 ## Thai corpus note
 
 Adding a Thai prose corpus (`นิทานเวตาล/เรื่องที่ 1`) exposed a different class than the Arabic/Hebrew work:

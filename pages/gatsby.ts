@@ -313,7 +313,7 @@ function buildSegmentSpans(preparedText: PreparedTextWithSegments): SegmentSpan[
       end: offset,
       text: segText,
       width: preparedText.widths[i]!,
-      isSpace: preparedText.isSpace[i]!,
+      isSpace: preparedText.kinds[i] === 'space',
       breakable: preparedText.breakableWidths[i] !== null,
     })
   }
