@@ -58,18 +58,22 @@ export const SIZES = [12, 14, 15, 16, 18, 20, 24, 28] as const
 
 export const WIDTHS = [150, 200, 250, 300, 350, 400, 500, 600] as const
 
-export type LetterSpacingOracleCase = {
+export type ProbeOracleCase = {
   label: string
   text: string
   width: number
   font: string
   lineHeight: number
-  letterSpacing: number
+  letterSpacing?: number
   whiteSpace?: 'normal' | 'pre-wrap'
   wordBreak?: 'normal' | 'keep-all'
   dir?: 'ltr' | 'rtl'
   lang?: string
   method?: 'range' | 'span'
+}
+
+export type LetterSpacingOracleCase = ProbeOracleCase & {
+  letterSpacing: number
 }
 
 export const LETTER_SPACING_ORACLE_CASES: readonly LetterSpacingOracleCase[] = [
@@ -193,6 +197,153 @@ export const LETTER_SPACING_ORACLE_CASES: readonly LetterSpacingOracleCase[] = [
     lineHeight: 32,
     letterSpacing: 1,
     wordBreak: 'keep-all',
+    lang: 'ja',
+  },
+]
+
+export const PRE_WRAP_ORACLE_CASES: readonly ProbeOracleCase[] = [
+  {
+    label: 'hanging spaces',
+    text: 'foo   bar',
+    width: 120,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'hard break',
+    text: 'a\nb',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'double hard break',
+    text: '\n\n',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'trailing final break',
+    text: 'a\n',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'leading spaces after break',
+    text: 'foo\n  bar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'whitespace-only middle line',
+    text: 'foo\n  \nbar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'spaces before hard break',
+    text: 'foo  \nbar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'tab before hard break',
+    text: 'foo\t\nbar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'crlf normalization',
+    text: 'foo\r\n  bar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'preserved space run',
+    text: 'foo    bar',
+    width: 126,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'mixed script indent',
+    text: 'AGI 春天到了\n  بدأت الرحلة 🚀',
+    width: 260,
+    font: '18px "Helvetica Neue", Arial, sans-serif',
+    lineHeight: 30,
+    dir: 'ltr',
+    lang: 'en',
+  },
+  {
+    label: 'rtl indent',
+    text: 'مرحبا\n  بالعالم',
+    width: 220,
+    font: '20px "Geeza Pro", "Arial", serif',
+    lineHeight: 34,
+    dir: 'rtl',
+    lang: 'ar',
+  },
+  {
+    label: 'default tab stops',
+    text: 'a\tb',
+    width: 120,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'double tabs',
+    text: 'a\t\tb',
+    width: 130,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+  {
+    label: 'tab after hard break',
+    text: 'foo\n\tbar',
+    width: 220,
+    font: '18px serif',
+    lineHeight: 32,
+  },
+]
+
+export const KEEP_ALL_ORACLE_CASES: readonly ProbeOracleCase[] = [
+  {
+    label: 'mixed latin plus cjk',
+    text: 'A 中文测试',
+    width: 140,
+    font: '18px serif',
+    lineHeight: 32,
+    lang: 'zh',
+  },
+  {
+    label: 'cjk punctuation boundary',
+    text: '中文，测试。下一句。',
+    width: 190,
+    font: '18px serif',
+    lineHeight: 32,
+    lang: 'zh',
+  },
+  {
+    label: 'korean no-space word',
+    text: '한국어테스트 테스트입니다',
+    width: 220,
+    font: '20px serif',
+    lineHeight: 34,
+    lang: 'ko',
+  },
+  {
+    label: 'mixed no-space cjk plus latin run',
+    text: '日本語foo-bar',
+    width: 110,
+    font: '18px serif',
+    lineHeight: 32,
     lang: 'ja',
   },
 ]

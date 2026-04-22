@@ -4,7 +4,12 @@ import {
   prepareWithSegments,
   type PreparedTextWithSegments,
 } from '../src/layout.ts'
-import { LETTER_SPACING_ORACLE_CASES, type LetterSpacingOracleCase } from '../src/test-data.ts'
+import {
+  KEEP_ALL_ORACLE_CASES,
+  LETTER_SPACING_ORACLE_CASES,
+  PRE_WRAP_ORACLE_CASES,
+  type ProbeOracleCase,
+} from '../src/test-data.ts'
 import {
   formatBreakContext,
   getDiagnosticUnits,
@@ -127,6 +132,17 @@ type ProbeConfig = {
   wordBreak: 'normal' | 'keep-all'
 }
 
+type ProbeBatchSpec = {
+  title: string
+  cases: readonly ProbeOracleCase[]
+  defaults: {
+    letterSpacing?: number
+    whiteSpace?: 'normal' | 'pre-wrap'
+    wordBreak?: 'normal' | 'keep-all'
+    method?: 'range' | 'span'
+  }
+}
+
 declare global {
   interface Window {
     __PROBE_REPORT__?: ProbeReport | ProbeBatchReport
@@ -175,20 +191,47 @@ const diagnosticCanvas = document.createElement('canvas')
 const diagnosticCtx = diagnosticCanvas.getContext('2d')!
 const graphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
 
-function materializeCase(testCase: LetterSpacingOracleCase): ProbeConfig {
+function getProbeBatchSpec(name: string | null): ProbeBatchSpec | null {
+  switch (name) {
+    case null:
+      return null
+    case 'letter-spacing':
+      return {
+        title: 'Letter-spacing',
+        cases: LETTER_SPACING_ORACLE_CASES,
+        defaults: {},
+      }
+    case 'pre-wrap':
+      return {
+        title: 'Pre-wrap',
+        cases: PRE_WRAP_ORACLE_CASES,
+        defaults: { whiteSpace: 'pre-wrap', method: 'span' },
+      }
+    case 'keep-all':
+      return {
+        title: 'Keep-all',
+        cases: KEEP_ALL_ORACLE_CASES,
+        defaults: { wordBreak: 'keep-all', method: 'span' },
+      }
+    default:
+      throw new Error(`Unknown probe batch ${name}`)
+  }
+}
+
+function materializeCase(testCase: ProbeOracleCase, defaults: ProbeBatchSpec['defaults']): ProbeConfig {
   const dir = testCase.dir ?? 'ltr'
   return {
     text: testCase.text,
     width: testCase.width,
     font: testCase.font,
-    letterSpacing: testCase.letterSpacing,
+    letterSpacing: testCase.letterSpacing ?? defaults.letterSpacing ?? 0,
     lineHeight: testCase.lineHeight,
     direction: dir,
     lang: testCase.lang ?? (dir === 'rtl' ? 'ar' : 'en'),
-    browserLineMethod: testCase.method ?? 'range',
+    browserLineMethod: testCase.method ?? defaults.method ?? 'range',
     verbose: false,
-    whiteSpace: testCase.whiteSpace ?? 'normal',
-    wordBreak: testCase.wordBreak ?? 'normal',
+    whiteSpace: testCase.whiteSpace ?? defaults.whiteSpace ?? 'normal',
+    wordBreak: testCase.wordBreak ?? defaults.wordBreak ?? 'normal',
   }
 }
 
@@ -771,13 +814,13 @@ function init(): void {
   }
 }
 
-function runLetterSpacingBatch(): void {
+function runProbeBatch(batchSpec: ProbeBatchSpec): void {
   try {
     publishNavigationPhase('measuring', requestId)
     const results: NonNullable<ProbeBatchReport['results']> = []
 
-    for (const testCase of LETTER_SPACING_ORACLE_CASES) {
-      applyConfig(materializeCase(testCase))
+    for (const testCase of batchSpec.cases) {
+      applyConfig(materializeCase(testCase, batchSpec.defaults))
       try {
         results.push({ label: testCase.label, report: buildProbeReport() })
       } catch (error) {
@@ -791,7 +834,7 @@ function runLetterSpacingBatch(): void {
       }
     }
 
-    stats.textContent = `Letter-spacing batch: ${results.length} cases`
+    stats.textContent = `${batchSpec.title} batch: ${results.length} cases`
     if (details !== null) {
       details.textContent = results
         .map(result => `${result.label}: ${result.report.status}`)
@@ -809,12 +852,27 @@ function runLetterSpacingBatch(): void {
 window.__PROBE_REPORT__ = withRequestId({ status: 'error', message: 'Pending initial layout' })
 clearNavigationReport()
 publishNavigationPhase('loading', requestId)
-if ('fonts' in document) {
-  void document.fonts.ready.then(batch === 'letter-spacing' ? runLetterSpacingBatch : init)
-} else {
-  if (batch === 'letter-spacing') {
-    runLetterSpacingBatch()
-  } else {
-    init()
+let batchSpec: ProbeBatchSpec | null = null
+let batchError: string | null = null
+try {
+  batchSpec = getProbeBatchSpec(batch)
+} catch (error) {
+  batchError = error instanceof Error ? error.message : String(error)
+}
+
+function runReadyProbe(): void {
+  if (batchError !== null) {
+    setError(batchError)
+    return
   }
+  if (batchSpec === null) {
+    init()
+  } else {
+    runProbeBatch(batchSpec)
+  }
+}
+if ('fonts' in document) {
+  void document.fonts.ready.then(runReadyProbe)
+} else {
+  runReadyProbe()
 }

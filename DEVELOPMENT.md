@@ -32,8 +32,8 @@ bun install
 - `bun run accuracy-snapshot:firefox`
 - `bun run benchmark-check` — Chrome benchmark snapshot
 - `bun run benchmark-check:safari`
-- `bun run pre-wrap-check` — compact browser oracle for `{ whiteSpace: 'pre-wrap' }`
-- `bun run keep-all-check` — compact browser oracle for `{ wordBreak: 'keep-all' }`, including mixed-script no-space canaries
+- `bun run pre-wrap-check` — compact batched browser oracle for `{ whiteSpace: 'pre-wrap' }`
+- `bun run keep-all-check` — compact batched browser oracle for `{ wordBreak: 'keep-all' }`, including mixed-script no-space canaries
 - `bun run letter-spacing-check` — compact batched browser oracle for `{ letterSpacing }`, using one posted-report probe per browser and covering narrow wraps, combining marks, bidi, CJK, emoji, digits, RTL punctuation, `pre-wrap`, and soft hyphens
 - `bun run letter-spacing-snapshot` — refresh `accuracy/letter-spacing.json` from the Chrome + Safari compact `{ letterSpacing }` oracle
 - `bun run probe-check` — smaller browser probe/diagnostic entrypoint
