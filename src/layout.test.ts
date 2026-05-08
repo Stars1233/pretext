@@ -445,6 +445,20 @@ describe('prepare invariants', () => {
     expect(prepared.segments).toEqual(['“Whenever'])
   })
 
+  test('keeps opening punctuation attached to the following word', () => {
+    const textBefore = 'aaaaaaaaaaaaaaaaaaa'
+    for (const opener of ['¡', '¿', '‚', '„', '\u2E18']) {
+      const prepared = prepareWithSegments(`${textBefore} ${opener}Wort`, FONT)
+      expect(prepared.segments).toEqual([textBefore, ' ', `${opener}Wort`])
+
+      const strandedOpenerWidth = measureWidth(`${textBefore} ${opener}`, FONT) + 0.1
+      expect(layoutWithLines(prepared, strandedOpenerWidth, LINE_HEIGHT).lines.map(line => line.text)).toEqual([
+        `${textBefore} `,
+        `${opener}Wort`,
+      ])
+    }
+  })
+
   test('keeps apostrophe-led elisions attached to the following word', () => {
     const prepared = prepareWithSegments('“Take ’em downstairs', FONT)
     expect(prepared.segments).toEqual(['“Take', ' ', '’em', ' ', 'downstairs'])

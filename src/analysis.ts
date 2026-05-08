@@ -221,7 +221,9 @@ export const kinsokuStart = new Set([
 export const kinsokuEnd = new Set([
   '"',
   '(', '[', '{',
-  '“', '‘', '«', '‹',
+  '¡', '¿',
+  '“', '‘', '‚', '„', '«', '‹',
+  '\u2E18',
   '\uFF08',
   '\u3014',
   '\u3008',
