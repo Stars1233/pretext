@@ -17,6 +17,7 @@
 - Line geometry now preserves browser-style terminal letter spacing, including rich-inline item boundaries and visible soft-hyphen breaks (#171).
 - Rich-inline item boundaries no longer overflow the requested width after a forced-progress break (#132).
 - The markdown chat demo now drops parsed link URLs unless they resolve to HTTP(S) hrefs (#168).
+- Overlong hyphenated runs now prefer browser-like dash breakpoints before falling back to emergency grapheme breaks (#89).
 
 ## 0.0.6 - 2026-04-22
 

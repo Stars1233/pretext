@@ -544,6 +544,33 @@ describe('prepare invariants', () => {
     ])
   })
 
+  test('prefers hyphen-like boundaries inside overlong breakable runs', () => {
+    const text = 'https://alpha-beta-gamma-delta.example.test/path'
+    const prepared = prepareWithSegments(text, FONT)
+    const width = measureWidth('https://alpha-bet', FONT) + 0.1
+
+    expect(prepared.segments).toEqual([text])
+
+    const batched = layoutWithLines(prepared, width, LINE_HEIGHT)
+    expect(batched.lines[0]?.text).toBe('https://alpha-')
+    expect(batched.lines[1]?.text).toBe('beta-gamma-')
+    expect(collectStreamedLines(prepared, width)).toEqual(batched.lines)
+    expect(layout(prepared, width, LINE_HEIGHT).lineCount).toBe(batched.lineCount)
+    expect(measureLineStats(prepared, width).lineCount).toBe(batched.lineCount)
+
+    const unicodeDash = prepareWithSegments('https://alpha\u2010beta\u2010gamma.example.test/path', FONT)
+    const unicodeWidth = measureWidth('https://alpha\u2010b', FONT) + 0.1
+    expect(layoutWithLines(unicodeDash, unicodeWidth, LINE_HEIGHT).lines[0]?.text).toBe('https://alpha\u2010')
+  })
+
+  test('does not prefer hyphen-like boundaries in keep-all runs', () => {
+    const text = 'foo-bar日本語'
+    const prepared = prepareWithSegments(text, FONT, { wordBreak: 'keep-all' })
+
+    expect(prepared.segments).toEqual(['foo-', 'bar日本語'])
+    expect(prepared.breakablePreferredBreaks).toEqual([null, null])
+  })
+
   test('keeps no-space punctuation chains together as one breakable segment', () => {
     const prepared = prepareWithSegments(
       'foo;bar foo:bar foo,bar foo.bar as;lkdfjals;k ééé.ééé αβγ.δεζ אבג.דהו',
