@@ -4,5 +4,6 @@ dist
 site
 *.tgz
 
+.claude
 .codex
 .DS_Store
