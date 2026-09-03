@@ -1,4 +1,4 @@
-import type { SegmentBreakKind } from './analysis.js'
+import { isDiscretionaryLineEnd } from './line-break.js'
 import type { PreparedTextWithSegments } from './layout.js'
 
 let sharedGraphemeSegmenter: Intl.Segmenter | null = null
@@ -26,17 +26,6 @@ function getSegmentGraphemes(
   }
   cache.set(segmentIndex, graphemes)
   return graphemes
-}
-
-function lineHasDiscretionaryHyphen(
-  kinds: SegmentBreakKind[],
-  startSegmentIndex: number,
-  endSegmentIndex: number,
-): boolean {
-  return (
-    endSegmentIndex > startSegmentIndex &&
-    kinds[endSegmentIndex - 1] === 'soft-hyphen'
-  )
 }
 
 function appendSegmentGraphemeRange(
@@ -69,12 +58,6 @@ export function buildLineTextFromRange(
   endGraphemeIndex: number,
 ): string {
   let text = ''
-  const endsWithDiscretionaryHyphen = lineHasDiscretionaryHyphen(
-    prepared.kinds,
-    startSegmentIndex,
-    endSegmentIndex,
-  )
-
   for (let i = startSegmentIndex; i < endSegmentIndex; i++) {
     if (prepared.kinds[i] === 'soft-hyphen' || prepared.kinds[i] === 'hard-break') continue
     if (i === startSegmentIndex && startGraphemeIndex > 0) {
@@ -86,7 +69,6 @@ export function buildLineTextFromRange(
   }
 
   if (endGraphemeIndex > 0) {
-    if (endsWithDiscretionaryHyphen) text += '-'
     const graphemes = getSegmentGraphemes(endSegmentIndex, prepared.segments, cache)
     text = appendSegmentGraphemeRange(
       text,
@@ -94,11 +76,9 @@ export function buildLineTextFromRange(
       startSegmentIndex === endSegmentIndex ? startGraphemeIndex : 0,
       endGraphemeIndex,
     )
-  } else if (endsWithDiscretionaryHyphen) {
-    text += '-'
   }
 
-  return text
+  return isDiscretionaryLineEnd(prepared.kinds, endSegmentIndex, endGraphemeIndex) ? text + '-' : text
 }
 
 export function clearLineTextCaches(): void {

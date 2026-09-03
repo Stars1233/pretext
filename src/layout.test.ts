@@ -1685,3 +1685,29 @@ describe('layout invariants', () => {
     }
   })
 })
+
+
+test('unchosen terminal soft hyphens consume source without painting a hyphen', () => {
+  for (const whiteSpace of ['normal', 'pre-wrap'] as const) {
+    for (const letterSpacing of [-1, 0, 2]) {
+      for (const text of ['abc\u00AD', 'abc\u00AD\u00AD', 'abc\u00AD\nx']) {
+        const prepared = prepareWithSegments(text, FONT, { whiteSpace, letterSpacing })
+        const reference = prepareWithSegments(text.replaceAll('\u00AD', ''), FONT, { whiteSpace, letterSpacing })
+        const expected = layoutWithLines(reference, 500, LINE_HEIGHT)
+        const actual = layoutWithLines(prepared, 500, LINE_HEIGHT)
+        expect(actual.lines.map(line => line.text)).toEqual(expected.lines.map(line => line.text))
+        expect(layout(prepared, 500, LINE_HEIGHT).lineCount).toBe(expected.lineCount)
+        expect(measureNaturalWidth(prepared)).toBeCloseTo(measureNaturalWidth(reference))
+        expect(measureLineStats(prepared, 500).maxLineWidth).toBeCloseTo(measureLineStats(reference, 500).maxLineWidth)
+        let cursor: TestLayoutCursor = { segmentIndex: 0, graphemeIndex: 0 }
+        for (const line of actual.lines) {
+          const range = layoutNextLineRange(prepared, cursor, 500)!
+          expect(materializeLineRange(prepared, range)).toEqual(line)
+          cursor = range.end
+        }
+        expect(cursor.segmentIndex).toBe(prepared.segments.length)
+        expect(layoutNextLine(prepared, cursor, 500)).toBeNull()
+      }
+    }
+  }
+})

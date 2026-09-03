@@ -33,6 +33,17 @@ type InternalLineVisitor = (
   endGraphemeIndex: number,
 ) => void
 
+// End cursors consume source. A terminal SHY is not a selected wrap, even
+// though it is the final consumed segment. Rendering derives that distinction
+// from the endpoint instead of treating every consumed SHY as visible.
+export function isDiscretionaryLineEnd(
+  kinds: readonly SegmentBreakKind[],
+  endSegmentIndex: number,
+  endGraphemeIndex: number,
+): boolean {
+  return endGraphemeIndex === 0 && endSegmentIndex > 0 && endSegmentIndex < kinds.length && kinds[endSegmentIndex - 1] === 'soft-hyphen'
+}
+
 function consumesAtLineStart(kind: SegmentBreakKind): boolean {
   return kind === 'space' || kind === 'zero-width-break' || kind === 'soft-hyphen'
 }
@@ -178,13 +189,11 @@ function getTerminalLetterSpacing(
       : 0
   }
 
+  if (isDiscretionaryLineEnd(prepared.kinds, endSegmentIndex, endGraphemeIndex)) return 0
+
   for (let i = endSegmentIndex - 1; i >= startSegmentIndex; i--) {
     const kind = prepared.kinds[i]!
-    if (kind === 'space' || kind === 'zero-width-break' || kind === 'hard-break') continue
-    if (kind === 'soft-hyphen') {
-      if (i === endSegmentIndex - 1) return 0
-      continue
-    }
+    if (kind === 'space' || kind === 'zero-width-break' || kind === 'hard-break' || kind === 'soft-hyphen') continue
 
     if (i === startSegmentIndex && startGraphemeIndex > 0) {
       return prepared.letterSpacing
@@ -699,10 +708,13 @@ export function walkPreparedLinesRaw(
         if (hasContent) {
           lineEndSegmentIndex = i + 1
           lineEndGraphemeIndex = 0
-          pendingBreakSegmentIndex = i + 1
-          pendingBreakFitWidth = lineW + discretionaryHyphenWidth
-          pendingBreakPaintWidth = lineW + discretionaryHyphenWidth
-          pendingBreakKind = kind
+          // A chunk-ending SHY has no following content to wrap onto another line.
+          if (i + 1 < chunk.endSegmentIndex) {
+            pendingBreakSegmentIndex = i + 1
+            pendingBreakFitWidth = lineW + discretionaryHyphenWidth
+            pendingBreakPaintWidth = lineW + discretionaryHyphenWidth
+            pendingBreakKind = kind
+          }
         }
         i++
         continue
@@ -948,10 +960,12 @@ function stepPreparedChunkLineGeometry(
       if (hasContent) {
         lineEndSegmentIndex = i + 1
         lineEndGraphemeIndex = 0
-        pendingBreakSegmentIndex = i + 1
-        pendingBreakFitWidth = lineW + discretionaryHyphenWidth
-        pendingBreakPaintWidth = lineW + discretionaryHyphenWidth
-        pendingBreakKind = kind
+        if (i + 1 < chunk.endSegmentIndex) {
+          pendingBreakSegmentIndex = i + 1
+          pendingBreakFitWidth = lineW + discretionaryHyphenWidth
+          pendingBreakPaintWidth = lineW + discretionaryHyphenWidth
+          pendingBreakKind = kind
+        }
       }
       continue
     }
