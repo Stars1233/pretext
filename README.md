@@ -221,7 +221,7 @@ Notes:
 - `PreparedText` is the opaque fast-path handle. `PreparedTextWithSegments` is the richer manual-layout handle.
 - `LayoutCursor` is a segment/grapheme cursor, not a raw string offset.
 - `layout()` with an empty string returns `{ lineCount: 0, height: 0 }`. Browsers still size an empty block to one `line-height`, so clamp with `Math.max(1, lineCount) * lineHeight` if you need that behavior.
-- The richer handle also includes `segLevels` for custom bidi-aware rendering. The line-breaking APIs do not read it.
+- The richer handle also includes approximate `segLevels` for custom bidi-aware rendering. Base direction and weak/neutral state restart at Unicode bidi paragraph separators in the normalized text. In `pre-wrap`, normalized newlines start fresh paragraphs; in `normal`, ASCII newlines collapse to spaces first. Tabs and U+2028 LINE SEPARATOR do not restart paragraph direction. This is not a full Unicode Bidirectional Algorithm implementation, and the line-breaking APIs do not read these levels.
 - Segment widths are browser-canvas widths for line breaking, not exact glyph-position data for custom Arabic or mixed-direction x-coordinate reconstruction.
 - If a soft hyphen wins the break, materialized line text includes the visible trailing `-`.
 - `measureNaturalWidth()` returns the widest forced line. Hard breaks still count.

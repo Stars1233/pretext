@@ -1711,3 +1711,36 @@ test('unchosen terminal soft hyphens consume source without painting a hyphen', 
     }
   }
 })
+
+
+describe('bidi paragraph boundaries', () => {
+  test('pre-wrap metadata matches independently prepared paragraphs', () => {
+    const paragraphs = ['אבג.', 'abc.', 'ا', '123', '\u0301abc', '𞤀𞤁 xyz']
+    const actual = prepareWithSegments(paragraphs.join('\r\n'), FONT, { whiteSpace: 'pre-wrap' })
+    const expected = paragraphs.flatMap(text => {
+      const paragraph = prepareWithSegments(text, FONT, { whiteSpace: 'pre-wrap' })
+      return paragraph.segments.map((segment, i) => ({ text: segment, level: paragraph.segLevels?.[i] ?? 0 }))
+    })
+    expect(actual.segments.flatMap((text, i) => text === '\n' ? [] : [{ text, level: actual.segLevels?.[i] ?? 0 }])).toEqual(expected)
+    expect(prepareWithSegments('one\ntwo\n', FONT, { whiteSpace: 'pre-wrap' }).segLevels).toBeNull()
+    // Normal whitespace collapses newline before bidi analysis, so it remains
+    // one paragraph; the rich metadata must follow that normalized input.
+    const normal = prepareWithSegments('אבג.\r\nabc.', FONT)
+    const collapsed = prepareWithSegments('אבג. abc.', FONT)
+    expect(normal.segments).toEqual(collapsed.segments)
+    expect(normal.segLevels).toEqual(collapsed.segLevels)
+    expect(getNonSpaceSegmentLevels(normal).at(-1)?.level).toBe(2)
+  })
+
+  test('all B separators reset base and weak state, while tabs and line separators do not', async () => {
+    const { computeSegmentLevels } = await import('./bidi.js')
+    const levels = (text: string) => Array.from(computeSegmentLevels(text, Array.from({ length: text.length }, (_, i) => i)) ?? new Int8Array(text.length))
+    for (const separator of ['\n', '\r', '\u001C', '\u001D', '\u001E', '\u0085', '\u2029']) {
+      expect(levels(`אבג.${separator}abc.`)).toEqual([1, 1, 1, 1, 1, 0, 0, 0, 0])
+      expect(levels(`ا${separator}123`)).toEqual([1, 1, 0, 0, 0])
+      expect(levels(`א${separator}\u0301a`)).toEqual([1, 1, 0, 0])
+    }
+    expect(levels('אבג.\n\nabc.')).toEqual([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
+    for (const separator of ['\t', '\u2028']) expect(levels(`אבג${separator}abc`).at(-1)).toBe(2)
+  })
+})

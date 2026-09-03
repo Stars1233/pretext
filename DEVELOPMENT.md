@@ -11,7 +11,7 @@ bun install
 - `bun start` — stable local page server at <http://localhost:3000>
 - `bun run start:windows` — Windows-friendly fallback without automatic port cleanup
 - `bun run check` — typecheck, lint, and dead-code scan (`knip`)
-- `bun test` — small durable invariant suite
+- `bun test` — small durable invariant suite, including approximate bidi paragraph independence and normal/pre-wrap normalization boundaries
 
 ### Packaging And Release
 
