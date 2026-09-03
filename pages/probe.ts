@@ -117,6 +117,7 @@ type ProbeBatchReport = {
     report: ProbeReport
   }>
   message?: string
+  environment?: { userAgent: string, devicePixelRatio: number, visibilityState: string }
 }
 
 type ProbeConfig = {
@@ -882,7 +883,11 @@ function runProbeBatch(batchSpec: ProbeBatchSpec): void {
         .map(result => `${result.label}: ${result.report.status}`)
         .join('\n')
     }
-    publishReport(withBatchRequestId({ status: 'ready', results }))
+    publishReport(withBatchRequestId({ status: 'ready', results, environment: {
+      userAgent: navigator.userAgent,
+      devicePixelRatio: window.devicePixelRatio,
+      visibilityState: document.visibilityState,
+    } }))
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     stats.textContent = `Error: ${message}`

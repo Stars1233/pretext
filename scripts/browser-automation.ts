@@ -120,7 +120,7 @@ export async function getAvailablePort(requestedPort: number | null = null): Pro
   })
 }
 
-const LOCK_DIR = join(process.env['TMPDIR'] ?? '/tmp', 'pretext-browser-automation-locks')
+const LOCK_DIR = join(process.env['TMPDIR'] ?? tmpdir(), 'pretext-browser-automation-locks')
 
 type LockMetadata = {
   pid: number
@@ -610,21 +610,27 @@ export async function ensurePageServer(
     return { baseUrl: existingBaseUrl, process: null }
   }
 
-  const serverProcess = spawn('/bin/zsh', ['-lc', `bun --port=${port} --no-hmr pages/*.html`], {
+  const entrypoints = Array.from(new Bun.Glob('pages/**/*.html').scanSync({ cwd })).sort()
+  const serverProcess = spawn(process.execPath, [`--port=${port}`, '--no-hmr', ...entrypoints], {
     cwd,
     stdio: 'ignore',
   })
 
-  const start = Date.now()
-  while (Date.now() - start < 20_000) {
-    const baseUrl = await resolveBaseUrl(port, pathname)
-    if (baseUrl !== null) {
-      return { baseUrl, process: serverProcess }
+  try {
+    const start = Date.now()
+    while (Date.now() - start < 20_000) {
+      if (serverProcess.exitCode !== null) throw new Error(`Bun page server exited with code ${serverProcess.exitCode}`)
+      const baseUrl = await resolveBaseUrl(port, pathname)
+      if (baseUrl !== null) {
+        return { baseUrl, process: serverProcess }
+      }
+      await sleep(100)
     }
-    await sleep(100)
+    throw new Error(`Timed out waiting for local Bun server on port ${port}${pathname}`)
+  } catch (error) {
+    serverProcess.kill()
+    throw error
   }
-
-  throw new Error(`Timed out waiting for local Bun server on port ${port}${pathname}`)
 }
 
 export async function loadHashReport<T extends { requestId?: string }>(

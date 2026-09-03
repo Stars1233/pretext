@@ -40,6 +40,10 @@ bun install
 - `bun run probe-check` — smaller browser diagnostic
 - `bun run probe-check:safari`
 
+The compact `pre-wrap-check`, `keep-all-check`, and `symbol-check` scripts share one runner. They keep their own case sets and line-comparison policy. Use `--output=/tmp/oracle.json` to save the report, including browser user agent, device pixel ratio and page visibility.
+
+For portable Chrome correctness checks, use `bun run keep-all-check --transport=playwright --browser=chrome`. This launches installed Chrome in an isolated headed browser with its native viewport; it does not require AppleScript or a Unix shell. Install Chrome normally first; the adapter uses `playwright-core` without downloading another browser. Automation locks use the platform's temporary directory. The page server runs the current Bun executable directly, and includes demo pages as well as diagnostics. Safari continues to use the native macOS path; Playwright WebKit is not treated as Safari. This transport is for correctness checks only; benchmark scripts retain foreground native automation. Check the recorded DPR and real target fonts when validating platform-specific font issues.
+
 When a probe finds a first-break mismatch, the report includes a short trace. `sN:gM` identifies a segment and grapheme; `[ours]` and `[browser]` identify the competing break positions. Safari `Range` extraction can be wrong around preserved whitespace and URL queries even when the rendered height is correct, so compare `--method=span` before changing the engine.
 
 ### Corpus Tooling
