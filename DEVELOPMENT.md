@@ -41,6 +41,7 @@ bun install
 - `bun run letter-spacing-snapshot` — refresh `accuracy/letter-spacing.json` from the Chrome + Safari `{ letterSpacing }` check
 - `bun run probe-check` — smaller browser diagnostic
 - `bun run probe-check:safari`
+- `bun run font-probe --browser=chrome --output=/tmp/font-probe.json` — optional Shantell Sans and font-language diagnostic; also accepts `safari` and `firefox`. Requires access to Google Fonts. A completed diagnostic records differences; it is not an accuracy pass. See [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md).
 
 The compact `pre-wrap-check`, `keep-all-check`, and `symbol-check` scripts share one runner. They keep their own case sets and line-comparison policy. Use `--output=/tmp/oracle.json` to save the report, including browser user agent, device pixel ratio and page visibility.
 
@@ -70,6 +71,7 @@ When a probe finds a first-break mismatch, the report includes a short trace. `s
 - `/accuracy` — browser sweep and per-line diagnostics
 - `/benchmark` — performance comparisons
 - `/corpus` — long-form corpus diagnostics
+- `/font-probe` — whole-run, isolated-grapheme, in-context and language-bound font measurements; see [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md)
 
 ## Current Dashboards And Snapshots
 

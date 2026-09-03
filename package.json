@@ -80,7 +80,8 @@
     "start:windows": "bun pages/*.html pages/demos/*.html pages/demos/*/index.html --host=0.0.0.0:3000",
     "symbol-check": "bun run scripts/symbol-check.ts",
     "discretionary-check": "bun run scripts/discretionary-check.ts",
-    "justification-check": "bun run scripts/justification-check.ts"
+    "justification-check": "bun run scripts/justification-check.ts",
+    "font-probe": "bun run scripts/font-probe.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

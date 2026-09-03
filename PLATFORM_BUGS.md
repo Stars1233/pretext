@@ -37,6 +37,8 @@ The three Safari engine-profile decisions above—line-fit allowance, `keep-all`
 
 ## Investigated, but not platform bugs
 
+- [Pretext #195](https://github.com/chenglou/pretext/issues/195): September 3 diagnostics reproduce the Shantell Sans bold wrap mismatch in Chrome 152 and Firefox 152, but whole-run Canvas and DOM measurements agree. Summing isolated grapheme widths loses contextual spacing. Near-threshold probes also distinguish reshaped prefixes from native in-paragraph advances; enabling the existing prefix model alone is insufficient. See [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md).
+- Generic `serif` under `lang=ja` can differ from a default-language offscreen canvas. In the September 3 Chrome and Firefox probes, an HTML canvas with matching `lang` restores the DOM width; Safari still differs. The named Times New Roman control agrees in all three. See [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md) for the measured context and remaining Safari difference.
 - Chromium's Korean closing-quote behavior is still modeled by `carryCJKAfterClosingQuote`, but the minimal repro behaved the same in Chrome 149 and Firefox 148. It follows the browser's `overflow-wrap: break-word` handling of the normal unbreakable unit before emergency grapheme breaking, so we did not file it as a Chromium bug.
 - The old Safari-only `preferEarlySoftHyphenBreak` branch was redundant with the later strict soft-hyphen boundary fix. It was removed after Safari 26.4 retesting; there is no remaining platform bug to track.
 - Safari emoji widths are wider than `font-size` at some small sizes because of Apple Color Emoji's non-linear scaling, but canvas and DOM agree. Comparing either one to `font-size` is the bug in the measurement model, not a Safari bug.
