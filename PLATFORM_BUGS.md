@@ -24,6 +24,8 @@ We reran the exact attached repro inputs in headed browsers on a Retina display 
 
 Safari does not reproduce either filed canvas/DOM bug: its emoji canvas and DOM widths agree, and its `system-ui` canvas and DOM widths agreed across the project's `10-28px` scan. The public recommendation still says to avoid `system-ui` on macOS because the same application may run in Chrome or Firefox.
 
+The Markdown chat overflow in [Pretext #202](https://github.com/chenglou/pretext/issues/202) reproduces this font-resolution problem in headed Firefox 152 at DPR 2. One ordinary fragment at `14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` measures 206.68px in OffscreenCanvas, 238.12px in DOM text, and 257.97px in an HTML canvas. The demo now uses `Helvetica, Arial, sans-serif` in both preparation and CSS. That change eliminates the overflowing text in the tested chat fixtures at three widths and three scroll positions; hanging trailing spaces can still extend beyond a row's fitted width.
+
 ## Safari/WebKit issues and compatibility behavior
 
 | Behavior | Classification and issue links | Evidence in this project | Current handling |
