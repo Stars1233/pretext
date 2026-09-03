@@ -36,6 +36,7 @@ bun install
 - `bun run keep-all-check` — small batched browser check for `{ wordBreak: 'keep-all' }`, including mixed-script text without spaces
 - `bun run discretionary-check` — compact soft-hyphen width/text oracle plus recorded browser-dependent narrow cases; accepts `--browser=safari` or `--browser=firefox`
 - `bun run symbol-check` — small batched Chrome + Safari check for symbol runs inside long words
+- `bun run justification-check` — demo line geometry and source continuity at reported widths; use `--browser=safari` or `--full` for all slider widths
 - `bun run letter-spacing-check` — small batched Chrome + Safari check for `{ letterSpacing }`
 - `bun run letter-spacing-snapshot` — refresh `accuracy/letter-spacing.json` from the Chrome + Safari `{ letterSpacing }` check
 - `bun run probe-check` — smaller browser diagnostic
