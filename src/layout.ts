@@ -35,14 +35,12 @@
 import { computeSegmentLevels } from './bidi.js'
 import {
   analyzeText,
-  canContinueKeepAllTextRun,
   clearAnalysisCaches,
-  endsWithClosingQuote,
-  isCJK,
+  getBreakablePreferredBreaks,
+  getCjkTextUnits,
+  getSharedGraphemeSegmenter,
   isNumericRunSegment,
-  kinsokuEnd,
-  kinsokuStart,
-  leftStickyPunctuation,
+  isIndependentSymbolRun,
   setAnalysisLocale,
   type SegmentBreakKind,
   type TextAnalysis,
@@ -72,15 +70,6 @@ import {
   clearLineTextCaches,
   getLineTextCache,
 } from './line-text.js'
-
-let sharedGraphemeSegmenter: Intl.Segmenter | null = null
-
-function getSharedGraphemeSegmenter(): Intl.Segmenter {
-  if (sharedGraphemeSegmenter === null) {
-    sharedGraphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
-  }
-  return sharedGraphemeSegmenter
-}
 
 // --- Public types ---
 
@@ -202,142 +191,6 @@ function createEmptyPrepared(includeSegments: boolean): InternalPreparedText | P
   } as unknown as InternalPreparedText
 }
 
-type MeasuredTextUnit = {
-  text: string
-  start: number
-}
-
-function buildBaseCjkUnits(
-  segText: string,
-  engineProfile: ReturnType<typeof getEngineProfile>,
-): MeasuredTextUnit[] {
-  const units: MeasuredTextUnit[] = []
-  let unitParts: string[] = []
-  let unitStart = 0
-  let unitContainsCJK = false
-  let unitEndsWithClosingQuote = false
-  let unitIsSingleKinsokuEnd = false
-
-  function pushUnit(): void {
-    if (unitParts.length === 0) return
-    units.push({
-      text: unitParts.length === 1 ? unitParts[0]! : unitParts.join(''),
-      start: unitStart,
-    })
-    unitParts = []
-    unitContainsCJK = false
-    unitEndsWithClosingQuote = false
-    unitIsSingleKinsokuEnd = false
-  }
-
-  function startUnit(grapheme: string, start: number, graphemeContainsCJK: boolean): void {
-    unitParts = [grapheme]
-    unitStart = start
-    unitContainsCJK = graphemeContainsCJK
-    unitEndsWithClosingQuote = endsWithClosingQuote(grapheme)
-    unitIsSingleKinsokuEnd = kinsokuEnd.has(grapheme)
-  }
-
-  function appendToUnit(grapheme: string, graphemeContainsCJK: boolean): void {
-    unitParts.push(grapheme)
-    unitContainsCJK = unitContainsCJK || graphemeContainsCJK
-    const graphemeEndsWithClosingQuote = endsWithClosingQuote(grapheme)
-    if (grapheme.length === 1 && leftStickyPunctuation.has(grapheme)) {
-      unitEndsWithClosingQuote = unitEndsWithClosingQuote || graphemeEndsWithClosingQuote
-    } else {
-      unitEndsWithClosingQuote = graphemeEndsWithClosingQuote
-    }
-    unitIsSingleKinsokuEnd = false
-  }
-
-  for (const gs of getSharedGraphemeSegmenter().segment(segText)) {
-    const grapheme = gs.segment
-    const graphemeContainsCJK = isCJK(grapheme)
-
-    if (unitParts.length === 0) {
-      startUnit(grapheme, gs.index, graphemeContainsCJK)
-      continue
-    }
-
-    if (
-      unitIsSingleKinsokuEnd ||
-      kinsokuStart.has(grapheme) ||
-      leftStickyPunctuation.has(grapheme) ||
-      (engineProfile.carryCJKAfterClosingQuote &&
-        graphemeContainsCJK &&
-        unitEndsWithClosingQuote)
-    ) {
-      appendToUnit(grapheme, graphemeContainsCJK)
-      continue
-    }
-
-    if (!unitContainsCJK && !graphemeContainsCJK) {
-      appendToUnit(grapheme, graphemeContainsCJK)
-      continue
-    }
-
-    pushUnit()
-    startUnit(grapheme, gs.index, graphemeContainsCJK)
-  }
-
-  pushUnit()
-  return units
-}
-
-function mergeKeepAllTextUnits(
-  segText: string,
-  units: MeasuredTextUnit[],
-  breakAfterPunctuation: boolean,
-): MeasuredTextUnit[] {
-  if (units.length <= 1) return units
-
-  const merged: MeasuredTextUnit[] = []
-  let groupStart = -1
-  let groupContainsCJK = false
-
-  function pushMergedUnit(start: number, end: number): void {
-    const sourceStart = units[start]!.start
-    const sourceEnd = end < units.length ? units[end]!.start : segText.length
-
-    merged.push({
-      text: segText.slice(sourceStart, sourceEnd),
-      start: sourceStart,
-    })
-  }
-
-  function flushGroup(end: number): void {
-    if (groupStart < 0) return
-
-    if (groupContainsCJK) {
-      if (groupStart + 1 === end) {
-        merged.push(units[groupStart]!)
-      } else {
-        pushMergedUnit(groupStart, end)
-      }
-    } else {
-      for (let i = groupStart; i < end; i++) merged.push(units[i]!)
-    }
-
-    groupStart = -1
-    groupContainsCJK = false
-  }
-
-  for (let i = 0; i < units.length; i++) {
-    const unit = units[i]!
-    if (
-      groupStart >= 0 &&
-      !canContinueKeepAllTextRun(units[i - 1]!.text, breakAfterPunctuation)
-    ) {
-      flushGroup(i)
-    }
-    if (groupStart < 0) groupStart = i
-    groupContainsCJK = groupContainsCJK || isCJK(unit.text)
-  }
-
-  flushGroup(units.length)
-  return merged
-}
-
 function countRenderedSpacingGraphemes(
   text: string,
   kind: SegmentBreakKind,
@@ -356,30 +209,6 @@ function countRenderedSpacingGraphemes(
   const graphemeSegmenter = getSharedGraphemeSegmenter()
   for (const _ of graphemeSegmenter.segment(text)) count++
   return count
-}
-
-function isPreferredBreakGrapheme(grapheme: string): boolean {
-  return (
-    grapheme === '-' ||
-    grapheme === '\u058A' ||
-    grapheme === '\u2010' ||
-    grapheme === '\u2012' ||
-    grapheme === '\u2013' ||
-    grapheme === '\u2014'
-  )
-}
-
-function getBreakablePreferredBreaks(text: string): number[] | null {
-  if (!/[-\u058A\u2010\u2012\u2013\u2014]/u.test(text)) return null
-
-  const breaks: number[] = []
-  let graphemeIndex = 0
-  for (const gs of getSharedGraphemeSegmenter().segment(text)) {
-    graphemeIndex++
-    if (isPreferredBreakGrapheme(gs.segment)) breaks.push(graphemeIndex)
-  }
-
-  return breaks.length === 0 ? null : breaks
 }
 
 function addInternalLetterSpacing(width: number, graphemeCount: number, letterSpacing: number): number {
@@ -450,7 +279,6 @@ function measureAnalysis(
     textMetrics: SegmentMetrics,
     kind: SegmentBreakKind,
     start: number,
-    wordLike: boolean,
     allowOverflowBreaks: boolean,
   ): void {
     const spacingGraphemeCount = hasLetterSpacing
@@ -474,7 +302,7 @@ function measureAnalysis(
         ? 0
         : width
 
-    if (allowOverflowBreaks && wordLike && text.length > 1) {
+    if (allowOverflowBreaks && text.length > 1) {
       let fitMode: BreakableFitMode = 'sum-graphemes'
       if (letterSpacing !== 0) {
         fitMode = 'segment-prefixes'
@@ -523,7 +351,6 @@ function measureAnalysis(
 
   for (let mi = 0; mi < analysis.len; mi++) {
     const segText = analysis.texts[mi]!
-    const segWordLike = analysis.isWordLike[mi]!
     const segKind = analysis.kinds[mi]!
     const segStart = analysis.starts[mi]!
 
@@ -572,10 +399,7 @@ function measureAnalysis(
     const segMetrics = getSegmentMetrics(segText, cache)
 
     if (segKind === 'text' && segMetrics.containsCJK) {
-      const baseUnits = buildBaseCjkUnits(segText, engineProfile)
-      const measuredUnits = wordBreak === 'keep-all'
-        ? mergeKeepAllTextUnits(segText, baseUnits, engineProfile.breakKeepAllAfterPunctuation)
-        : baseUnits
+      const measuredUnits = getCjkTextUnits(segText, engineProfile, wordBreak)
 
       for (let i = 0; i < measuredUnits.length; i++) {
         const unit = measuredUnits[i]!
@@ -585,14 +409,14 @@ function measureAnalysis(
           unitMetrics,
           'text',
           segStart + unit.start,
-          segWordLike,
-          wordBreak === 'keep-all' || !unitMetrics.containsCJK,
+          unit.overflow === 'grapheme' || (analysis.isWordLike[mi]! && (wordBreak === 'keep-all' || unit.overflow === 'word-like')),
         )
       }
       continue
     }
 
-    pushMeasuredTextSegment(segText, segMetrics, segKind, segStart, segWordLike, true)
+    pushMeasuredTextSegment(segText, segMetrics, segKind, segStart,
+      segKind === 'text' && (analysis.isWordLike[mi]! || isIndependentSymbolRun(segText)))
   }
 
   if (chunkStartSegmentIndex < widths.length) {
@@ -888,7 +712,6 @@ export function layoutWithLines(prepared: PreparedTextWithSegments, maxWidth: nu
 
 export function clearCache(): void {
   clearAnalysisCaches()
-  sharedGraphemeSegmenter = null
   clearLineTextCaches()
   clearMeasurementCaches()
 }

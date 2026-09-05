@@ -1,4 +1,4 @@
-import { isCJK } from './analysis.js'
+import { getSharedGraphemeSegmenter, isCJK } from './analysis.js'
 
 export type SegmentMetrics = {
   width: number
@@ -9,6 +9,7 @@ export type SegmentMetrics = {
 }
 
 export type EngineProfile = {
+  geckoAsciiLineBreaks: boolean
   lineFitEpsilon: number
   carryCJKAfterClosingQuote: boolean
   breakKeepAllAfterPunctuation: boolean
@@ -29,7 +30,6 @@ const MAX_PREFIX_FIT_GRAPHEMES = 96
 
 const emojiPresentationRe = /\p{Emoji_Presentation}/u
 const maybeEmojiRe = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u20E3]/u
-let sharedGraphemeSegmenter: Intl.Segmenter | null = null
 const emojiCorrectionCache = new Map<string, number>()
 
 export function getMeasureContext(): CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D {
@@ -75,6 +75,7 @@ export function getEngineProfile(): EngineProfile {
 
   if (typeof navigator === 'undefined') {
     cachedEngineProfile = {
+      geckoAsciiLineBreaks: false,
       lineFitEpsilon: 0.005,
       carryCJKAfterClosingQuote: false,
       breakKeepAllAfterPunctuation: true,
@@ -98,8 +99,10 @@ export function getEngineProfile(): EngineProfile {
     ua.includes('Chromium/') ||
     ua.includes('CriOS/') ||
     ua.includes('Edg/')
+  const isGecko = ua.includes('Firefox/') && !ua.includes('FxiOS/')
 
   cachedEngineProfile = {
+    geckoAsciiLineBreaks: isGecko,
     lineFitEpsilon: isSafari ? 1 / 64 : 0.005,
     carryCJKAfterClosingQuote: isChromium,
     breakKeepAllAfterPunctuation: !isSafari,
@@ -111,13 +114,6 @@ export function getEngineProfile(): EngineProfile {
 export function parseFontSize(font: string): number {
   const m = font.match(/(\d+(?:\.\d+)?)\s*px/)
   return m ? parseFloat(m[1]!) : 16
-}
-
-function getSharedGraphemeSegmenter(): Intl.Segmenter {
-  if (sharedGraphemeSegmenter === null) {
-    sharedGraphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
-  }
-  return sharedGraphemeSegmenter
 }
 
 function isEmojiGrapheme(g: string): boolean {
@@ -268,5 +264,4 @@ export function getFontMeasurementState(font: string, needsEmojiCorrection: bool
 export function clearMeasurementCaches(): void {
   segmentMetricCaches.clear()
   emojiCorrectionCache.clear()
-  sharedGraphemeSegmenter = null
 }

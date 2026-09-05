@@ -12,6 +12,14 @@ bun install
 - `bun run start:windows` — Windows-friendly fallback without automatic port cleanup
 - `bun run check` — typecheck, lint, and dead-code scan (`knip`)
 - `bun test` — small durable invariant suite, including approximate bidi paragraph independence and normal/pre-wrap normalization boundaries
+- `bun run test:wrapping --browser=all` — complete maintained checks and selected regressions against a fresh pinned-main comparison
+- `bun run test:wrapping --suite=full --browser=all` — also run the broad exploratory wrapping matrices
+
+See [the wrapping suite](tests/wrapping/README.md) for worktree comparisons,
+known-failure reporting, native observation limits and reproducible case IDs.
+Its default gate requires the maintained absolute checks and rejects lost baseline
+successes elsewhere; it does not claim zero total incompatibilities. The ordinary
+and full schedules use the same assertions.
 
 ### Packaging And Release
 
@@ -24,28 +32,27 @@ bun install
 
 ### Browser Accuracy And Benchmarking
 
-- `bun run accuracy-check` — Chrome browser sweep
-- `bun run accuracy-check:safari`
-- `bun run accuracy-check:firefox`
-- `bun run accuracy-snapshot` — refresh `accuracy/chrome.json`
-- `bun run accuracy-snapshot:safari`
-- `bun run accuracy-snapshot:firefox`
-- `bun run benchmark-check` — Chrome benchmark snapshot; default is the median of 3 full page runs, use `--runs=1` for a quick local check
-- `bun run benchmark-check:safari`
-- `bun run pre-wrap-check` — small batched browser check for `{ whiteSpace: 'pre-wrap' }`
-- `bun run keep-all-check` — small batched browser check for `{ wordBreak: 'keep-all' }`, including mixed-script text without spaces
-- `bun run discretionary-check` — compact soft-hyphen width/text oracle plus recorded browser-dependent narrow cases; accepts `--browser=safari` or `--browser=firefox`
-- `bun run symbol-check` — small batched Chrome + Safari check for symbol runs inside long words
+- `bun run test:wrapping --browser=all` — maintained accuracy, mode, spacing, discretionary and corpus checks, plus wrapping regressions
+- `bun run test:wrapping:snapshot` — refresh accuracy/corpus snapshots and both dashboards from that same run
+- `bun run test:wrapping --family=pre-wrap --browser=safari` — select one family for diagnosis
+- `bun run benchmark-check --output=benchmarks/chrome.json` — refresh the Chrome benchmark snapshot; default is the median of 3 full page runs, use `--runs=1` for a quick local check
+- `bun run benchmark-check:safari --output=benchmarks/safari.json` — refresh the Safari benchmark snapshot
 - `bun run justification-check` — demo line geometry and source continuity at reported widths; use `--browser=safari` or `--full` for all slider widths
-- `bun run letter-spacing-check` — small batched Chrome + Safari check for `{ letterSpacing }`
-- `bun run letter-spacing-snapshot` — refresh `accuracy/letter-spacing.json` from the Chrome + Safari `{ letterSpacing }` check
 - `bun run probe-check` — smaller browser diagnostic
 - `bun run probe-check:safari`
 - `bun run font-probe --browser=chrome --output=/tmp/font-probe.json` — optional Shantell Sans and font-language diagnostic; also accepts `safari` and `firefox`. Requires access to Google Fonts. A completed diagnostic records differences; it is not an accuracy pass. See [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md).
 
-The compact `pre-wrap-check`, `keep-all-check`, and `symbol-check` scripts share one runner. They keep their own case sets and line-comparison policy. Use `--output=/tmp/oracle.json` to save the report, including browser user agent, device pixel ratio and page visibility.
+The wrapping suite owns these maintained checks. Case records preserve each
+oracle's content width, whitespace/word-break modes, locale, browser scope,
+Range/span method, and tolerance. Required checks fail on unobserved results as
+well as mismatches. A matching pinned-main failure does not waive them.
+The rich-inline checks cover original item coordinates, callback ownership and
+signed boundary spaces. Fourteen native ZWSP/WJ item witnesses require matching rich
+height; the unresolved flat ZWSP reproduction remains observed separately.
+The benchmark runner requires every measurement section before writing a
+snapshot; a successful report from an unrelated page is not a benchmark result.
 
-For portable Chrome correctness checks, use `bun run keep-all-check --transport=playwright --browser=chrome`. This launches installed Chrome in an isolated headed browser with its native viewport; it does not require AppleScript or a Unix shell. Install Chrome normally first; the adapter uses `playwright-core` without downloading another browser. Automation locks use the platform's temporary directory. The page server runs the current Bun executable directly, and includes demo pages as well as diagnostics. Safari continues to use the native macOS path; Playwright WebKit is not treated as Safari. This transport is for correctness checks only; benchmark scripts retain foreground native automation. Check the recorded DPR and real target fonts when validating platform-specific font issues.
+For portable Chrome correctness checks, use `bun run test:wrapping --transport=playwright --browser=chrome`. This launches installed Chrome in an isolated headed browser with its native viewport; it does not require AppleScript or a Unix shell. Install Chrome normally first; the adapter uses `playwright-core` without downloading another browser. Automation locks use the platform's temporary directory. The page server runs the current Bun executable directly, and includes demo pages as well as diagnostics. Safari continues to use the native macOS path; Playwright WebKit is not treated as Safari. This transport is for correctness checks only; benchmark scripts retain foreground native automation. Check the recorded DPR and real target fonts when validating platform-specific font issues.
 
 When a probe finds a first-break mismatch, the report includes a short trace. `sN:gM` identifies a segment and grapheme; `[ours]` and `[browser]` identify the competing break positions. Safari `Range` extraction can be wrong around preserved whitespace and URL queries even when the rendered height is correct, so compare `--method=span` before changing the engine.
 
@@ -53,13 +60,14 @@ When a probe finds a first-break mismatch, the report includes a short trace. `s
 
 - `bun run corpus-check` — diagnose one corpus at one or a few widths
 - `bun run corpus-check:safari`
-- `bun run corpus-sweep` — maintained Chrome `step=10` corpus width sweep
-- `bun run corpus-sweep:safari` — maintained Safari `step=10` corpus width sweep
 - `bun run corpus-font-matrix` — same corpus under alternate fonts
 - `bun run corpus-font-matrix:safari`
 - `bun run corpus-taxonomy` — group corpus mismatches by likely cause
 - `bun run corpus-status` — rebuild `corpora/dashboard.json`
-- `bun run corpus-status:refresh` — refresh Chrome and Safari `step=10` sweeps, then the corpus dashboard
+
+The corpus, probe, font-matrix and taxonomy tools remain detailed investigation
+tools, including source slices and alternate extractors. They do not run as a
+second maintained acceptance suite.
 
 ### Status Dashboards
 
@@ -68,7 +76,7 @@ When a probe finds a first-break mismatch, the report includes a short trace. `s
 ## Useful Pages
 
 - `/demos/index` — index of the public demos
-- `/accuracy` — browser sweep and per-line diagnostics
+- `/accuracy` — checked-in accuracy snapshots produced by the shared suite
 - `/benchmark` — performance comparisons
 - `/corpus` — long-form corpus diagnostics
 - `/font-probe` — whole-run, isolated-grapheme, in-context and language-bound font measurements; see [FONT_DIAGNOSTICS.md](FONT_DIAGNOSTICS.md)
@@ -78,11 +86,11 @@ When a probe finds a first-break mismatch, the report includes a short trace. `s
 Use these for the current checked-in results:
 
 - [status/dashboard.json](status/dashboard.json) — machine-readable main dashboard
-- [accuracy/chrome.json](accuracy/chrome.json), [accuracy/safari.json](accuracy/safari.json), [accuracy/firefox.json](accuracy/firefox.json) — raw browser accuracy rows
+- [accuracy/chrome.json](accuracy/chrome.json), [accuracy/safari.json](accuracy/safari.json), [accuracy/firefox.json](accuracy/firefox.json) — accuracy totals, environment/source fingerprints and mismatching cases; complete rows are in the run artifacts
 - [accuracy/letter-spacing.json](accuracy/letter-spacing.json) — results from the small Chrome + Safari `{ letterSpacing }` check
 - [benchmarks/chrome.json](benchmarks/chrome.json), [benchmarks/safari.json](benchmarks/safari.json) — raw benchmark snapshots
 - [corpora/dashboard.json](corpora/dashboard.json) — machine-readable corpus dashboard
-- [corpora/chrome-step10.json](corpora/chrome-step10.json), [corpora/safari-step10.json](corpora/safari-step10.json) — checked-in browser `step=10` corpus sweep snapshots
+- [corpora/chrome-step10.json](corpora/chrome-step10.json), [corpora/safari-step10.json](corpora/safari-step10.json), [corpora/firefox-step10.json](corpora/firefox-step10.json) — checked-in browser `step=10` corpus sweep snapshots
 
 [PLATFORM_BUGS.md](PLATFORM_BUGS.md) lists current browser and OS issues and their workarounds. [RESEARCH.md](RESEARCH.md) keeps durable findings and rejected approaches; it is not a source for current counts or issue status.
 

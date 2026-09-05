@@ -11,9 +11,13 @@ const config: KnipConfig = {
     'scripts/**/*.ts',
     // Browser pages and demos — each `pages/**/*.ts` is the target of a `<script type="module" src="…">` in a sibling `.html`
     'pages/**/*.ts',
+    // Bundled through the comparison runner's generated candidate entry.
+    'tests/wrapping/browser.ts',
+    'tests/wrapping/contracts.ts',
+    'tests/wrapping/numeric.ts',
   ],
   ignore: [
-    'src/layout.test.ts', // Exclude tests so their imports don't count as "usage"
+    '**/*.test.ts', // Exclude tests so their imports don't count as "usage"
   ],
   ignoreDependencies: [
     'tsgolint', // Type-aware checker invoked by `oxlint --type-aware` via oxlint-tsgolint

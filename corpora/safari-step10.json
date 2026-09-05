@@ -1,5 +1,36 @@
 [
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "mul"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "mixed-app-text",
     "language": "mul",
     "title": "Mixed app text",
@@ -12,6 +43,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "en"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "en-gatsby-opening",
     "language": "en",
     "title": "The Great Gatsby opening",
@@ -23,32 +85,63 @@
     "exactCount": 58,
     "mismatches": [
       {
+        "id": "wrap-f59be48ed6f4d300",
         "width": 300,
+        "contentWidth": 220,
         "diffPx": -26,
         "predictedHeight": 243830,
-        "actualHeight": 243856,
-        "predictedLineCount": 9375,
-        "browserLineCount": 9376
+        "actualHeight": 243856
       },
       {
+        "id": "wrap-5dd037abdcef3a0b",
         "width": 370,
+        "contentWidth": 290,
         "diffPx": -26,
         "predictedHeight": 180832,
-        "actualHeight": 180858,
-        "predictedLineCount": 6952,
-        "browserLineCount": 6953
+        "actualHeight": 180858
       },
       {
+        "id": "wrap-bfba2a9c79c206ec",
         "width": 670,
+        "contentWidth": 590,
         "diffPx": 26,
         "predictedHeight": 85776,
-        "actualHeight": 85750,
-        "predictedLineCount": 3296,
-        "browserLineCount": 3295
+        "actualHeight": 85750
       }
     ]
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "ja"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ja-rashomon",
     "language": "ja",
     "title": "羅生門",
@@ -61,6 +154,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "ja"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ja-kumo-no-ito",
     "language": "ja",
     "title": "蜘蛛の糸",
@@ -73,6 +197,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "ko"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ko-unsu-joh-eun-nal",
     "language": "ko",
     "title": "운수 좋은 날",
@@ -85,6 +240,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "ko"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ko-sonagi",
     "language": "ko",
     "title": "소나기",
@@ -97,6 +283,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "zh"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "zh-zhufu",
     "language": "zh",
     "title": "祝福",
@@ -109,6 +326,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "zh"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "zh-guxiang",
     "language": "zh",
     "title": "故鄉",
@@ -121,6 +369,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "th"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "th-nithan-vetal-story-1",
     "language": "th",
     "title": "นิทานเวตาล/เรื่องที่ 1",
@@ -133,6 +412,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "th"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "th-nithan-vetal-story-7",
     "language": "th",
     "title": "นิทานเวตาล เรื่องที่ ๗",
@@ -145,6 +455,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "my"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "my-cunning-heron-teacher",
     "language": "my",
     "title": "စဉ်းလဲသော ဗျိုင်း (ဆရာ)",
@@ -156,32 +497,63 @@
     "exactCount": 58,
     "mismatches": [
       {
+        "id": "wrap-8b2a390f5c781e5f",
         "width": 340,
+        "contentWidth": 260,
         "diffPx": 32,
         "predictedHeight": 3152,
-        "actualHeight": 3120,
-        "predictedLineCount": 96,
-        "browserLineCount": 95
+        "actualHeight": 3120
       },
       {
+        "id": "wrap-35d0529be8108c9f",
         "width": 480,
+        "contentWidth": 400,
         "diffPx": 32,
         "predictedHeight": 2032,
-        "actualHeight": 2000,
-        "predictedLineCount": 61,
-        "browserLineCount": 60
+        "actualHeight": 2000
       },
       {
+        "id": "wrap-4cf23dfc2462d29e",
         "width": 710,
+        "contentWidth": 630,
         "diffPx": 32,
         "predictedHeight": 1296,
-        "actualHeight": 1264,
-        "predictedLineCount": 38,
-        "browserLineCount": 37
+        "actualHeight": 1264
       }
     ]
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "my"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "my-bad-deeds-return-to-you-teacher",
     "language": "my",
     "title": "မကောင်းမှုဒဏ် ကိုယ့်ထံပြန် (ဆရာ)",
@@ -193,24 +565,55 @@
     "exactCount": 59,
     "mismatches": [
       {
+        "id": "wrap-cd0cb08d681a1f69",
         "width": 400,
+        "contentWidth": 320,
         "diffPx": 32,
         "predictedHeight": 1680,
-        "actualHeight": 1648,
-        "predictedLineCount": 50,
-        "browserLineCount": 49
+        "actualHeight": 1648
       },
       {
+        "id": "wrap-b4152115062f972d",
         "width": 580,
+        "contentWidth": 500,
         "diffPx": 32,
         "predictedHeight": 1104,
-        "actualHeight": 1072,
-        "predictedLineCount": 32,
-        "browserLineCount": 31
+        "actualHeight": 1072
       }
     ]
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "km"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "km-prachum-reuang-preng-khmer-volume-7-stories-1-10",
     "language": "km",
     "title": "ប្រជុំរឿងព្រេងខ្មែរ/ភាគទី៧ (រឿង ១-១០)",
@@ -223,6 +626,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "rtl",
+        "context": {
+          "kind": "installed",
+          "lang": "ar"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ar-risalat-al-ghufran-part-1",
     "language": "ar",
     "title": "رسالة الغفران/الجزء الأول",
@@ -234,16 +668,47 @@
     "exactCount": 60,
     "mismatches": [
       {
+        "id": "wrap-71efdcf2fbeadfe4",
         "width": 490,
+        "contentWidth": 410,
         "diffPx": 34,
         "predictedHeight": 64884,
-        "actualHeight": 64850,
-        "predictedLineCount": 1906,
-        "browserLineCount": 1905
+        "actualHeight": 64850
       }
     ]
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "rtl",
+        "context": {
+          "kind": "installed",
+          "lang": "ar"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ar-al-bukhala",
     "language": "ar",
     "title": "البخلاء",
@@ -256,6 +721,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "ltr",
+        "context": {
+          "kind": "installed",
+          "lang": "hi"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "hi-eidgah",
     "language": "hi",
     "title": "प्रेमचंद की सर्वश्रेष्ठ कहानियां/ईदगाह",
@@ -268,6 +764,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "rtl",
+        "context": {
+          "kind": "installed",
+          "lang": "he"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "he-masaot-binyamin-metudela",
     "language": "he",
     "title": "מסעות בנימין מטודלה",
@@ -280,6 +807,37 @@
     "mismatches": []
   },
   {
+    "generatedAt": "2026-09-05T11:46:19.040Z",
+    "suiteHash": "d8b6f632d374c1ff3fa35f94f4ece70e44f361f790ad504a0002ed6546e4f3bc",
+    "source": {
+      "revision": "9f00a4fd146ad9c5d92249b6c0a9704c6bf5679a",
+      "files": {
+        "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
+        "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
+        "generated/bidi-data.ts": "745211b804d907af78afb6c1ed87eff6d7454a5e85152a6129eb7b3bf0f6f262",
+        "layout.ts": "4cbd10c697940243beaec2c311e6f3978163caa8e204a1d7693fffeda31e2abf",
+        "line-break.ts": "35aba48f3245facf2d818958a46c4ee330484010286aa3d8611ace864dbebff7",
+        "line-text.ts": "86058e13259ab1280e1eeea3fe739a40e2f00ddec2b76b4a0d09b1d62f3ea7e1",
+        "measurement.ts": "2b3360a3fceb5cf88482d9cb1c7dc007e14074cfecb50479573bc655faf849bb",
+        "rich-inline.ts": "1c67f7c2f468cf58639e16aef0b47829609500549fe243ad53253e3abe878967",
+        "text-modules.d.ts": "1547f88f0eb75293bc20054194a2bba29a4bc911c2a4fa99cef98141b6f99927"
+      }
+    },
+    "environments": [
+      {
+        "direction": "rtl",
+        "context": {
+          "kind": "installed",
+          "lang": "ur"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5.2 Safari/605.1.15",
+        "dpr": 2,
+        "locale": "zh-CN",
+        "visibility": "visible",
+        "focused": false,
+        "fonts": []
+      }
+    ],
     "corpusId": "ur-chughd",
     "language": "ur",
     "title": "چغد",
@@ -291,36 +849,36 @@
     "exactCount": 57,
     "mismatches": [
       {
+        "id": "wrap-e378e32fe0360619",
         "width": 330,
+        "contentWidth": 250,
         "diffPx": 38,
         "predictedHeight": 16268,
-        "actualHeight": 16230,
-        "predictedLineCount": 426,
-        "browserLineCount": 425
+        "actualHeight": 16230
       },
       {
+        "id": "wrap-b794ece894db2ebe",
         "width": 410,
+        "contentWidth": 330,
         "diffPx": 38,
         "predictedHeight": 12164,
-        "actualHeight": 12126,
-        "predictedLineCount": 318,
-        "browserLineCount": 317
+        "actualHeight": 12126
       },
       {
+        "id": "wrap-2a213c1c6f9ca858",
         "width": 680,
+        "contentWidth": 600,
         "diffPx": 38,
         "predictedHeight": 6616,
-        "actualHeight": 6578,
-        "predictedLineCount": 172,
-        "browserLineCount": 171
+        "actualHeight": 6578
       },
       {
+        "id": "wrap-3bd23f813602dc1f",
         "width": 750,
+        "contentWidth": 670,
         "diffPx": 38,
         "predictedHeight": 5932,
-        "actualHeight": 5894,
-        "predictedLineCount": 154,
-        "browserLineCount": 153
+        "actualHeight": 5894
       }
     ]
   }

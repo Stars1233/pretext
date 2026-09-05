@@ -2,6 +2,7 @@
 
 ## 1. Engine Work
 
+- Flat #210/#211 remains open. Preserve original source positions and distinguish ordinary, emergency and discretionary cuts before broadening ZWSP handling. The narrow paragraph-start change still loses main and old-worktree cases; fixing rich item identity does not fix flat shaping. Keep the opposing source-view inputs in the shared inventory.
 - Use the separate `analyze()` and `measure()` benchmark rows when changing `prepare()`. Use the chunk-heavy rich-text rows when changing streaming APIs.
 - Before changing Safari prefix-width behavior, run the synthetic long breakable text case. Lower retained memory does not justify a meaningful `prepare()` regression.
 - Chinese is the most useful current CJK regression case. Until broader measurements show a rule that applies beyond those cases, treat strongly font- or shaping-sensitive differences in Chinese, Myanmar, and Urdu as limits of the current design.
@@ -9,6 +10,7 @@
 
 ## 2. Regression Coverage
 
+- Compare wrapping candidates with the shared [test inventory](tests/wrapping/README.md). Keep each lost success visible; aggregate improvements do not establish a replacement for main or an older worktree.
 - Keep mixed app text as the main app-like regression case. Add only real text patterns that the current corpus misses.
 - Add corpora only from clean source text. Expand the font matrix only around a case with a reproducible mismatch.
 - Prefer a new Southeast Asian source that broadens coverage over another wrapped legal or raw-source artifact.

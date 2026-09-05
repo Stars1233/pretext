@@ -7,3 +7,4 @@ site
 .claude
 .codex
 .DS_Store
+.artifacts

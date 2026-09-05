@@ -2,9 +2,9 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 
 type AccuracySnapshot = {
-  total?: number
-  matchCount?: number
-  mismatchCount?: number
+  total: number
+  matchCount: number
+  mismatchCount: number
 }
 
 type SweepSummary = {
@@ -15,7 +15,7 @@ type SweepSummary = {
   end: number
   widthCount: number
   exactCount: number
-  mismatches?: Array<{
+  mismatches: Array<{
     width: number
     diffPx: number
   }>
@@ -238,11 +238,9 @@ function indexSweepSummaries(summaries: SweepSummary[]): Map<string, SweepSummar
 
 const ANCHOR_WIDTHS = [300, 600, 800] as const
 
-function summarizeStep10Anchors(summary: SweepSummary | undefined): AnchorSummary | null {
-  if (summary === undefined) return null
-
+function summarizeStep10Anchors(summary: SweepSummary): AnchorSummary {
   const mismatchesByWidth = new Map(
-    (summary.mismatches ?? []).map(row => [row.width, Math.round(row.diffPx)] as const),
+    summary.mismatches.map(row => [row.width, Math.round(row.diffPx)] as const),
   )
   const exactWidths: number[] = []
   const mismatches: AnchorSummary['mismatches'] = []
@@ -265,21 +263,42 @@ function summarizeStep10Anchors(summary: SweepSummary | undefined): AnchorSummar
 
 function summarizeAccuracy(snapshot: AccuracySnapshot) {
   return {
-    total: snapshot.total ?? 0,
-    matchCount: snapshot.matchCount ?? 0,
-    mismatchCount: snapshot.mismatchCount ?? 0,
+    total: snapshot.total,
+    matchCount: snapshot.matchCount,
+    mismatchCount: snapshot.mismatchCount,
   }
 }
 
 const output = parseStringFlag('output') ?? 'corpora/dashboard.json'
 const chromeStep10 = await loadJson<SweepSummary[]>('corpora/chrome-step10.json')
 const safariStep10 = await loadJson<SweepSummary[]>('corpora/safari-step10.json')
+const firefoxStep10 = await loadJson<SweepSummary[]>('corpora/firefox-step10.json')
 const chromeAccuracy = await loadJson<AccuracySnapshot>('accuracy/chrome.json')
 const safariAccuracy = await loadJson<AccuracySnapshot>('accuracy/safari.json')
 const firefoxAccuracy = await loadJson<AccuracySnapshot>('accuracy/firefox.json')
 
-const step10ByCorpus = indexSweepSummaries(chromeStep10)
+const chromeStep10ByCorpus = indexSweepSummaries(chromeStep10)
 const safariStep10ByCorpus = indexSweepSummaries(safariStep10)
+const firefoxStep10ByCorpus = indexSweepSummaries(firefoxStep10)
+
+function summarizeCorpus(meta: CorpusDashboardMeta) {
+  const chrome = chromeStep10ByCorpus.get(meta.id)
+  const safari = safariStep10ByCorpus.get(meta.id)
+  const firefox = firefoxStep10ByCorpus.get(meta.id)
+  if (chrome === undefined || safari === undefined || firefox === undefined) throw new Error(`Incomplete browser corpus snapshots for ${meta.id}`)
+  return {
+    id: meta.id,
+    title: chrome.title,
+    language: chrome.language,
+    chromeAnchors: summarizeStep10Anchors(chrome),
+    safariAnchors: summarizeStep10Anchors(safari),
+    firefoxAnchors: summarizeStep10Anchors(firefox),
+    chromeStep10: { exactCount: chrome.exactCount, widthCount: chrome.widthCount },
+    safariStep10: { exactCount: safari.exactCount, widthCount: safari.widthCount },
+    firefoxStep10: { exactCount: firefox.exactCount, widthCount: firefox.widthCount },
+    notes: meta.notes,
+  }
+}
 
 const dashboard = {
   generatedAt: new Date().toISOString(),
@@ -291,6 +310,7 @@ const dashboard = {
     },
     chromeStep10: 'corpora/chrome-step10.json',
     safariStep10: 'corpora/safari-step10.json',
+    firefoxStep10: 'corpora/firefox-step10.json',
     taxonomy: 'corpora/TAXONOMY.md',
   },
   browserRegressionGate: {
@@ -298,38 +318,9 @@ const dashboard = {
     safari: summarizeAccuracy(safariAccuracy),
     firefox: summarizeAccuracy(firefoxAccuracy),
   },
-  productShaped: PRODUCT_SHAPED.map(meta => {
-    const step10 = step10ByCorpus.get(meta.id)
-    return {
-      id: meta.id,
-      title: step10?.title ?? meta.id,
-      language: step10?.language ?? '',
-      chromeAnchors: summarizeStep10Anchors(step10),
-      safariAnchors: summarizeStep10Anchors(safariStep10ByCorpus.get(meta.id)),
-      chromeStep10: step10 === undefined ? null : { exactCount: step10.exactCount, widthCount: step10.widthCount },
-      safariStep10: safariStep10ByCorpus.get(meta.id) === undefined ? null : {
-        exactCount: safariStep10ByCorpus.get(meta.id)!.exactCount,
-        widthCount: safariStep10ByCorpus.get(meta.id)!.widthCount,
-      },
-      notes: meta.notes,
-    }
-  }),
-  longForm: LONG_FORM.map(meta => {
-    const step10 = step10ByCorpus.get(meta.id)
-    return {
-      id: meta.id,
-      title: step10?.title ?? meta.id,
-      language: step10?.language ?? '',
-      chromeAnchors: summarizeStep10Anchors(step10),
-      safariAnchors: summarizeStep10Anchors(safariStep10ByCorpus.get(meta.id)),
-      chromeStep10: step10 === undefined ? null : { exactCount: step10.exactCount, widthCount: step10.widthCount },
-      safariStep10: safariStep10ByCorpus.get(meta.id) === undefined ? null : {
-        exactCount: safariStep10ByCorpus.get(meta.id)!.exactCount,
-        widthCount: safariStep10ByCorpus.get(meta.id)!.widthCount,
-      },
-      notes: meta.notes,
-    }
-  }),
+  notesScope: 'Corpus, fine-sweep and font-matrix notes describe Chrome/Safari and historical investigations. Firefox results are the recorded step10 counts and anchors only.',
+  productShaped: PRODUCT_SHAPED.map(summarizeCorpus),
+  longForm: LONG_FORM.map(summarizeCorpus),
   fineSweepNotes: FINE_SWEEP_NOTES,
   fontMatrixNotes: FONT_MATRIX_NOTES,
 }
