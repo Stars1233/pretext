@@ -1,4 +1,4 @@
 {
-  "revision": "76b4b4e270af1c93bdaa9033f27a22438ec3f56c",
-  "description": "Published main before the wrapping fixes. The runner measures this source and every candidate against the same fresh browser observations. Existing wrong outputs are observations, never expected answers. Advance this revision explicitly when adopting an implementation."
+  "revision": "ac6289f137542ed7d9e46a91089023166d29bd54",
+  "description": "Reviewed wrapping boundary and rich-inline fixes. The runner measures this source and every candidate against the same fresh browser observations; existing mismatches remain observations, never expected answers."
 }

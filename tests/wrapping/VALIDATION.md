@@ -8,6 +8,31 @@ opposites discovered during review.
 [README.md](README.md) explains the runner; [INVENTORY.md](INVENTORY.md) records
 coverage, provenance and research protocols outside its scope.
 
+## Published-main landing validation
+
+The isolated landing starts at published main `76b4b4e`; unrelated unpublished
+local demo/Freerange commits are excluded. Runtime commit `ac6289f` matches every
+frozen source hash in the landing run. It was compared with both published main
+and previously validated `9b02df1` on the full shared inventory in all three
+installed browsers, both directions, at DPR 2: 656,402 inputs. Every prediction
+and assessment matches the validated branch. There are zero lost passing metrics
+against either reference, zero required/execution failures and zero new API/rich
+failures, including research observations. All fourteen native rich-item height
+witnesses pass in each browser; nine numeric environment profiles preserve
+contracts and TAB behavior. Flat #210/#211 remains observed and unresolved.
+
+The ordinary baseline now points at `ac6289f`, so later changes must preserve the
+newly gained successes too. The pin is a reachable source commit, not disabled
+tests or a frozen list of browser answers. Accuracy, spacing and corpus snapshots
+were regenerated from these same full observations. Unit/static/package/site
+checks pass (168 tests, 991 assertions on this published-main base; three local
+demo tests remain with their unpublished changes). Earlier paired foreground
+benchmarks are recorded below; the landing did not add another engine change.
+
+Suite hash: `a3567aaad94c409992fbd828f041c780a16162dba4779837d88a6ec6cd3b9e4d`.
+Raw rows, source fingerprints and the independent equality/loss audit are in
+`/private/tmp/pretext-merge-audit-20260905/landing-full` and `landing-audit.json`.
+
 ## Rich-inline implementation and review
 
 Relative to boundary branch `9f00a4f`, only `src/rich-inline.ts` changes in
