@@ -25,6 +25,62 @@ The library uses two phases:
 
 Across broad browser sweeps, this design remained accurate while `layout()` stayed fast enough for resize-driven work.
 
+## Boundary Policy And Measurement Units
+
+Word-segmenter `isWordLike` is a useful measurement hint, but it does not define
+emergency wrapping permission. Independent punctuation and symbol graphemes can
+break in an overlong run too. That extension excludes emoji, whose ordinary
+boundaries differ from word-internal symbols, as well as control-bearing fragments,
+standalone combining marks and emoji modifiers; those need their own shaping and
+source-progress model. A grapheme's attached marks stay with its base.
+
+Opening punctuation and Gecko's directional numeric-affix rules must retain the
+original neighboring source characters before punctuation, URL and numeric-run
+compaction. A later pass cannot recover a boundary after merging has erased it.
+The Gecko rule owns classified ASCII opener and numeric-affix seams. Wider
+Unicode boundary behavior retains the existing compatibility policy.
+
+CJK kinsoku units and preferred hyphen boundaries belong to analysis. Measurement
+still observes each coarse analyzed run before its CJK units and receives
+ordinary boundaries separately from emergency permission. An ASCII hyphen after CJK attaches left;
+a numeric sign also stays with its suffix. An overlong such unit can still make
+grapheme progress. Latin hyphens retain their existing preferred breaks. The
+existing CJK-leading mixed-run rule also precedes generic ASCII opener attachment,
+even when its final scalar is ASCII: Firefox can keep Hangul plus Latin in one
+word segment where other runtimes separate them.
+
+Desktop Firefox resolves CSS box widths to 1/60px.
+A headed DPR 2 sweep of 241 box widths from 35px through 36px matched
+`Math.round(width * 60) / 60` within 0.00002px, including 35.59375px resolving to
+35.6px. Applying that quantization to line fitting nevertheless regressed
+independent signed-spacing and ligature thresholds in the full sweep. Box
+resolution does not establish the inline fit threshold, so the line walkers
+retain their existing width handling. Wider Unicode-affix tailoring likewise
+exposed inherited trailing-space admission failures; it remains unmodeled here.
+
+## Rich Inline Source Identity And Boundary Spaces
+
+A rich item has source identity independently of its measured width. Filtering
+zero-width items through the flat walker's first line lost standalone ZWSP,
+while a compressed item array exposed cursor indices in a different coordinate
+space from fragment indices. Prepared items now occupy their original source
+indices in one array. The prepared segment count supplies each item's source end;
+an infinite-width walk supplies only its natural width. Inactive SHY-only items
+retain their source without creating a line on their own.
+
+SPACE presence and advance are separate facts. Its font and letter spacing come
+from the first whitespace in the collapsed boundary. `measureText('A A') -
+measureText('AA')` also includes the font's A–A kerning difference; measuring SPACE
+directly avoids that contamination. A zero or negative advance still creates an
+ordinary break opportunity. After forced overflow, the remaining width retains
+its negative deficit instead of giving a following signed gap fictitious room.
+
+The batch visitor owns its continuation before handing a line to user code.
+Public mutation of that line cannot alter the next line's source position.
+These changes leave the flat engine unchanged. Same-font native inline witnesses
+and public contract checks do not establish arbitrary cross-item shaping, rich
+Markdown layout, or a general solution to flat ZWSP/SHY wrapping.
+
 ## Measurement Approaches We Rejected
 
 Several alternatives were tried and rejected:

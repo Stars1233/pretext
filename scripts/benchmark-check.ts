@@ -279,6 +279,11 @@ try {
       console.log(`Benchmark run ${runIndex + 1}/${runs}:`)
     }
     const report = await loadHashReport<BenchmarkReport>(session, url, requestId, browser)
+    if (report.status !== 'ready') throw new Error(report.message ?? 'Benchmark failed')
+    for (const key of [...BENCHMARK_RESULT_KEYS, 'corpusResults'] as const) {
+      const rows = report[key]
+      if (rows === undefined || rows.length === 0) throw new Error(`Incomplete benchmark report: missing ${key}`)
+    }
     reports.push(report)
     if (runs > 1) {
       printReport(report)

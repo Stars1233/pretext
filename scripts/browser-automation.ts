@@ -18,6 +18,7 @@ export type BrowserSession = {
 
 export type BrowserSessionOptions = {
   foreground?: boolean
+  headless?: boolean
 }
 
 export type PageServer = {
@@ -354,11 +355,11 @@ function closeFirefoxSessionState(state: FirefoxSessionState): void {
   rmSync(state.profileDir, { recursive: true, force: true })
 }
 
-async function initializeFirefoxSession(): Promise<FirefoxSessionState> {
+async function initializeFirefoxSession(options: BrowserSessionOptions): Promise<FirefoxSessionState> {
   const bidiPort = await getAvailablePort()
   const profileDir = mkdtempSync(join(tmpdir(), 'pretext-firefox-'))
   const firefoxProcess = spawn('/Applications/Firefox.app/Contents/MacOS/firefox', [
-    '--headless',
+    ...(options.headless === false ? [] : ['--headless']),
     '--new-instance',
     '--profile',
     profileDir,
@@ -541,7 +542,7 @@ function createChromeSession(options: BrowserSessionOptions): BrowserSession {
   }
 }
 
-function createFirefoxSession(_options: BrowserSessionOptions): BrowserSession {
+function createFirefoxSession(options: BrowserSessionOptions): BrowserSession {
   let statePromise: Promise<FirefoxSessionState> | null = null
   let closed = false
 
@@ -549,7 +550,7 @@ function createFirefoxSession(_options: BrowserSessionOptions): BrowserSession {
     if (closed) {
       return Promise.reject(new Error('Firefox automation session already closed'))
     }
-    statePromise ??= initializeFirefoxSession()
+    statePromise ??= initializeFirefoxSession(options)
     return statePromise
   }
 

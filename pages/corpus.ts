@@ -12,39 +12,9 @@ import {
   measureDomTextWidth,
 } from './diagnostic-utils.ts'
 import { clearNavigationReport, publishNavigationPhase, publishNavigationReport } from './report-utils.ts'
-import sourcesData from '../corpora/sources.json' with { type: 'json' }
-import arAlBukhala from '../corpora/ar-al-bukhala.txt' with { type: 'text' }
-import arRisalatAlGhufranPart1 from '../corpora/ar-risalat-al-ghufran-part-1.txt' with { type: 'text' }
-import enGatsbyOpening from '../corpora/en-gatsby-opening.txt' with { type: 'text' }
-import heMasaotBinyaminMetudela from '../corpora/he-masaot-binyamin-metudela.txt' with { type: 'text' }
-import hiEidgah from '../corpora/hi-eidgah.txt' with { type: 'text' }
-import jaKumoNoIto from '../corpora/ja-kumo-no-ito.txt' with { type: 'text' }
-import jaRashomon from '../corpora/ja-rashomon.txt' with { type: 'text' }
-import kmPrachumReuangPrengKhmerVolume7Stories1To10 from '../corpora/km-prachum-reuang-preng-khmer-volume-7-stories-1-10.txt' with { type: 'text' }
-import myBadDeedsReturnToYouTeacher from '../corpora/my-bad-deeds-return-to-you-teacher.txt' with { type: 'text' }
-import myCunningHeronTeacher from '../corpora/my-cunning-heron-teacher.txt' with { type: 'text' }
-import koSonagi from '../corpora/ko-sonagi.txt' with { type: 'text' }
-import koUnsuJohEunNal from '../corpora/ko-unsu-joh-eun-nal.txt' with { type: 'text' }
-import mixedAppText from '../corpora/mixed-app-text.txt' with { type: 'text' }
-import thNithanVetalStory1 from '../corpora/th-nithan-vetal-story-1.txt' with { type: 'text' }
-import thNithanVetalStory7 from '../corpora/th-nithan-vetal-story-7.txt' with { type: 'text' }
-import urChughd from '../corpora/ur-chughd.txt' with { type: 'text' }
-import zhGuxiang from '../corpora/zh-guxiang.txt' with { type: 'text' }
-import zhZhufu from '../corpora/zh-zhufu.txt' with { type: 'text' }
+import { corpusSources, corpusTexts } from '../tests/wrapping/fixtures/corpora.ts'
 
-type CorpusMeta = {
-  id: string
-  language: string
-  direction?: 'ltr' | 'rtl'
-  title: string
-  output: string
-  font_family?: string
-  font_size_px?: number
-  line_height_px?: number
-  default_width?: number
-  min_width?: number
-  max_width?: number
-}
+type CorpusMeta = (typeof corpusSources)[number]
 
 type CorpusReport = {
   status: 'ready' | 'error'
@@ -254,7 +224,7 @@ document.body.appendChild(lineProbeDiv)
 
 const diagnosticGraphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
 
-let corpusList: CorpusMeta[] = []
+const corpusList = corpusSources
 let currentMeta: CorpusMeta | null = null
 let currentText = ''
 let currentPrepared: PreparedTextWithSegments | null = null
@@ -996,56 +966,10 @@ function populateSelect(selectedId: string): void {
   }
 }
 
-async function loadSources(): Promise<CorpusMeta[]> {
-  return sourcesData as CorpusMeta[]
-}
-
-async function loadText(meta: CorpusMeta): Promise<string> {
-  switch (meta.id) {
-    case 'ar-al-bukhala':
-      return arAlBukhala
-    case 'ar-risalat-al-ghufran-part-1':
-      return arRisalatAlGhufranPart1
-    case 'en-gatsby-opening':
-      return enGatsbyOpening
-    case 'he-masaot-binyamin-metudela':
-      return heMasaotBinyaminMetudela
-    case 'hi-eidgah':
-      return hiEidgah
-    case 'ja-kumo-no-ito':
-      return jaKumoNoIto
-    case 'ja-rashomon':
-      return jaRashomon
-    case 'km-prachum-reuang-preng-khmer-volume-7-stories-1-10':
-      return kmPrachumReuangPrengKhmerVolume7Stories1To10
-    case 'my-cunning-heron-teacher':
-      return myCunningHeronTeacher
-    case 'my-bad-deeds-return-to-you-teacher':
-      return myBadDeedsReturnToYouTeacher
-    case 'ko-unsu-joh-eun-nal':
-      return koUnsuJohEunNal
-    case 'ko-sonagi':
-      return koSonagi
-    case 'mixed-app-text':
-      return mixedAppText
-    case 'th-nithan-vetal-story-1':
-      return thNithanVetalStory1
-    case 'th-nithan-vetal-story-7':
-      return thNithanVetalStory7
-    case 'ur-chughd':
-      return urChughd
-    case 'zh-zhufu':
-      return zhZhufu
-    case 'zh-guxiang':
-      return zhGuxiang
-    default:
-      throw new Error(`No bundled text import for corpus ${meta.id}`)
-  }
-}
-
 async function loadCorpus(meta: CorpusMeta): Promise<void> {
   currentMeta = meta
-  const rawText = await loadText(meta)
+  const rawText = corpusTexts[meta.id]
+  if (rawText === undefined) throw new Error(`No bundled text import for corpus ${meta.id}`)
 
   updateTitle(meta)
   configureControls(meta)
@@ -1124,7 +1048,6 @@ publishNavigationPhase('loading', requestId)
 
 async function init(): Promise<void> {
   try {
-    corpusList = await loadSources()
     if (corpusList.length === 0) {
       throw new Error('No corpora found')
     }

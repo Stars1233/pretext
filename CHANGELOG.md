@@ -8,6 +8,9 @@
 
 ### Fixed
 
+- Rich-inline cursors now retain original item indices across empty items, zero-width items can occupy a line, and boundary spaces preserve their font and signed letter spacing. Mutating a visited line no longer changes the walker's continuation.
+- Overlong independent symbol runs can now wrap at grapheme boundaries, with browser-specific punctuation attachment (#208).
+- Numeric minus signs no longer introduce a preferred break before their number, and ASCII hyphens after CJK text stay attached to the preceding character (#213, #215).
 - The Markdown chat demo now keeps ordinary text inside its bubbles in Firefox on macOS ([#202](https://github.com/chenglou/pretext/issues/202)).
 
 ## 0.0.8 - 2026-06-11

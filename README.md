@@ -122,6 +122,8 @@ It is intentionally narrow:
 - `white-space: normal` only
 - not a nested markup tree and not a general CSS inline formatting engine
 
+Fragment and cursor `itemIndex` values refer to that original list, including when it contains empty items. A collapsed boundary space uses the first space's font and letter spacing; `gapBefore` can be zero or negative. Zero-width content can still occupy a line and carry a break opportunity.
+
 ### API Glossary
 
 Use-case 1 APIs:
@@ -232,13 +234,16 @@ Notes:
 Pretext doesn't try to be a full font rendering engine (yet?). It currently targets the common text setup:
 - `white-space: normal` and `pre-wrap`
 - `word-break: normal` and `keep-all`
-- `overflow-wrap: break-word`. Very narrow widths can still break inside words, but only at grapheme boundaries.
+- `overflow-wrap: break-word`. Very narrow widths can still break inside words and independent symbol runs, but only at grapheme boundaries.
 - `line-break: auto`
 - `letter-spacing` as a numeric pixel value passed to `prepare()` / `prepareWithSegments()`
 - Tabs follow the default browser-style `tab-size: 8`
 - `{ wordBreak: 'keep-all' }` is supported too. It behaves like you'd expect for CJK/Hangul and no-space mixed Latin/numeric/CJK text, while keeping the same `overflow-wrap: break-word` fallback for overlong runs.
 - `system-ui` and `-apple-system` are unsafe for `layout()` accuracy on macOS. Use a named font. See the [platform bug ledger](PLATFORM_BUGS.md) for the Chrome and Firefox issues.
-- Contextual font spacing can still change emergency breaks inside long words. Shantell Sans is one known example. Generic fonts can also resolve differently under a DOM `lang` setting that the measurement canvas does not share; use a named font and verify the actual text in the target browser.
+- Emoji next to punctuation can still wrap differently from the browser.
+- Text containing zero-width spaces can still wrap differently from the browser. The rich-inline helper preserves standalone ZWSP items, but still inherits the flat text engine's wrapping limits inside each item.
+- Some fonts, such as Shantell Sans, can produce different line breaks inside long words in Pretext and the browser.
+- If your page sets `lang`, a generic font like `sans-serif` may select a different font from the one Pretext measures. Use a named font and check the result in your browser.
 - Runtime requires `Intl.Segmenter` and Canvas 2D text measurement. Browsers or runtimes without `Intl.Segmenter` are currently unsupported.
 - CSS text features outside the canvas `font` shorthand, such as `font-optical-sizing`, `font-feature-settings`, and standalone `font-variation-settings`, are not modeled separately. Variable-font axes only help when the active axis is reflected in the canvas font string, for example via weight.
 
