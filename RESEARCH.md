@@ -49,6 +49,12 @@ existing CJK-leading mixed-run rule also precedes generic ASCII opener attachmen
 even when its final scalar is ASCII: Firefox can keep Hangul plus Latin in one
 word segment where other runtimes separate them.
 
+A single URL can contain many preferred hyphen breaks and produce many narrow
+lines. Restarting the preferred-break search at zero for every continuation made
+streaming and aggregate rich layout quadratic in that run's length. Batch walking
+already carries the next boundary; arbitrary continuation cursors now seek within
+the sorted break list without rescanning earlier cuts or adding cursor state.
+
 Desktop Firefox resolves CSS box widths to 1/60px.
 A headed DPR 2 sweep of 241 box widths from 35px through 36px matched
 `Math.round(width * 60) / 60` within 0.00002px, including 35.59375px resolving to
@@ -212,3 +218,46 @@ The remaining Japanese and Chinese differences varied with browser, width, and f
 ### Font Matrices
 
 The first sampled font matrix showed that some differences move when the font changes while other scripts remain stable. Font matrices are therefore most useful after a specific corpus exposes a problem. Running every corpus under every installed font adds cost without identifying the responsible text pattern.
+
+## Algorithmic work and source ownership
+
+The September 2026 history audit found four earlier families of quadratic work:
+reclassifying growing punctuation/Arabic strings and rescanning cleared slots
+(fixed by `30854d7`, `2148b90`, `4cb8b24`, `f0a326d`); CJK/keep-all growing-unit
+merging (`eb3bbbe`, `f0a326d`); measuring every growing Canvas prefix (bounded by
+`fcf9c62`); and searching hard-break chunks from the beginning for every streamed
+line (`2c52171`). The later source-range cleanup `7201ee8` retained these fixes
+with fewer intermediate structures. Experimental duplicates in history are not
+separate shipped incidents.
+
+Three remaining retry scans were found and repaired without changing layout
+semantics:
+
+- Rich boundary trimming used an unanchored trailing-whitespace regex that tried
+  every suffix of a long internal SPACE run followed by content. Two inward
+  source-offset scans now derive leading/trailing presence and slice once; the
+  exact CSS whitespace set and the first collapsed SPACE's style are preserved.
+- Streaming a long hyphenated URL restarted its preferred-break search at zero
+  for every continuation. The sorted boundary array now supports a lower-bound
+  search for arbitrary starts; an already positioned batch cursor returns
+  immediately. There is no additional cursor state or cache.
+- Pixel font-size extraction retried within every digit run when no `px` suffix
+  followed. Starting only at a digit-run boundary preserves the existing first
+  match and fallback while preventing repeated suffix scans.
+
+The whitespace and preferred-break paths dated to `9364741` and `9cf49de`,
+respectively, before the wrapping-boundary/source-identity work. Counted probes
+verify at most input length plus two whitespace boundary checks; a 4,096-hyphen
+URL's streaming search drops from 2,096,128 skipped boundaries to 12,288 binary
+comparisons. Semantic probes preserve complete ranges, text, widths and copied
+cursors, including signed spacing. Timing probes using a numeric Canvas double
+are algorithm diagnosis, not native browser throughput claims.
+
+The Safari prefix-fit policy still caps each segment at 96 graphemes and uses
+pair context beyond that. Count total submitted text as well as Canvas calls:
+a large combining cluster can appear in up to 96 prefixes, a large but bounded
+linear amplification. The cap does not bound the native font shaper's own cost.
+Current merging, bidi passes, chunk walking and materialization probes found no
+other unbounded repeated scan; output materialization still costs the source it
+visits. Shared font/segment caches can accumulate across unique prepared inputs
+until `clearCache()`, which is a separate lifetime concern.

@@ -88,9 +88,6 @@ type PreparedRichInlineItem = {
   prepared: PreparedTextWithSegments
 }
 
-const COLLAPSIBLE_BOUNDARY_RE = /[ \t\n\f\r]+/
-const LEADING_COLLAPSIBLE_BOUNDARY_RE = /^[ \t\n\f\r]+/
-const TRAILING_COLLAPSIBLE_BOUNDARY_RE = /[ \t\n\f\r]+$/
 const EMPTY_LAYOUT_CURSOR: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 }
 const RICH_INLINE_START_CURSOR: RichInlineCursor = {
   itemIndex: 0,
@@ -111,6 +108,10 @@ function cloneCursor(cursor: LayoutCursor): LayoutCursor {
 
 function isLineStartCursor(cursor: LayoutCursor): boolean {
   return cursor.segmentIndex === 0 && cursor.graphemeIndex === 0
+}
+
+function isCollapsibleBoundaryWhitespace(code: number): boolean {
+  return code === 0x20 || code === 0x09 || code === 0x0A || code === 0x0C || code === 0x0D
 }
 
 function getCollapsedSpaceWidth(font: string, letterSpacing: number): number {
@@ -145,18 +146,23 @@ export function prepareRichInline(items: RichInlineItem[]): PreparedRichInline {
   for (let index = 0; index < items.length; index++) {
     const item = items[index]!
     const letterSpacing = item.letterSpacing ?? 0
-    const hasLeadingWhitespace = LEADING_COLLAPSIBLE_BOUNDARY_RE.test(item.text)
-    const hasTrailingWhitespace = TRAILING_COLLAPSIBLE_BOUNDARY_RE.test(item.text)
-    const trimmedText = item.text
-      .replace(LEADING_COLLAPSIBLE_BOUNDARY_RE, '')
-      .replace(TRAILING_COLLAPSIBLE_BOUNDARY_RE, '')
+    let start = 0
+    while (start < item.text.length && isCollapsibleBoundaryWhitespace(item.text.charCodeAt(start))) start++
 
-    if (trimmedText.length === 0) {
-      if (COLLAPSIBLE_BOUNDARY_RE.test(item.text) && pendingGapWidth === null) {
+    if (start === item.text.length) {
+      if (start > 0 && pendingGapWidth === null) {
         pendingGapWidth = getCollapsedSpaceWidth(item.font, letterSpacing)
       }
       continue
     }
+
+    // Scan from the ends once. A trailing-whitespace regex retries every
+    // position in a long internal space run when later content prevents a match.
+    let end = item.text.length
+    while (end > start && isCollapsibleBoundaryWhitespace(item.text.charCodeAt(end - 1))) end--
+    const hasLeadingWhitespace = start > 0
+    const hasTrailingWhitespace = end < item.text.length
+    const trimmedText = item.text.slice(start, end)
 
     const gapBefore = pendingGapWidth ?? (
       hasLeadingWhitespace ? getCollapsedSpaceWidth(item.font, letterSpacing) : 0

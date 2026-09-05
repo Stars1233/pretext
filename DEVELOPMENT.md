@@ -104,3 +104,13 @@ For one-off performance and memory work, start with `bun start` and an isolated,
 - Diff forced-GC heap snapshots for retained memory.
 
 Bun/Node microbenchmarks are useful for quick experiments, but browser behavior needs browser measurements.
+
+For algorithmic changes, scale both source length and the number of segments,
+preferred breaks, forced lines and rich items. Include repeated punctuation,
+Arabic joins, CJK keep-all, long hyphenated URLs and internal whitespace runs.
+Count visited boundaries and submitted Canvas text, with cold caches, before
+relying on timings; doubling an input should not quadruple repeated work.
+Compare complete public outputs and copied/variable-width continuations as well
+as line counts. Keep narrow diagnostic probes outside the maintained browser
+corpus; retain small semantic regressions when a mechanism changes. The history
+and current bounds are recorded in [RESEARCH.md](RESEARCH.md).
