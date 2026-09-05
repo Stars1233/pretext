@@ -8,6 +8,50 @@ opposites discovered during review.
 [README.md](README.md) explains the runner; [INVENTORY.md](INVENTORY.md) records
 coverage, provenance and research protocols outside its scope.
 
+## Algorithmic-work audit and repairs
+
+The history/current-code audit repaired three inherited repeated scans:
+rich boundary whitespace, preferred-break lookup for streamed continuations,
+and pixel font-size parsing. Production changes are +30/−15 lines, with no new
+public state or caches. The cause and retained historical bounds are documented
+in [RESEARCH.md](../../RESEARCH.md).
+
+All 33,622 ordinary inputs passed fresh Chrome, Safari and Firefox comparisons
+against reviewed runtime `ac6289f`, both directions. An independent raw-row audit
+confirms every prediction and assessment is identical, with zero required or
+execution failures and no new API/rich failures; all fourteen native rich-item
+height checks pass per browser. Nine numeric environment profiles also agree.
+This is an ordinary comparison, not a new full exploratory sweep. Accuracy,
+spacing and corpus snapshots were regenerated from exactly these observations.
+The baseline remains `ac6289f` because no native correctness result changes.
+
+The smaller structural checks separately count work. Rich endpoint scanning
+uses at most source length plus two checks. The 4,096-hyphen streaming witness
+drops from 2,096,128 skipped cuts to 12,288 binary comparisons. Before/after public
+comparisons cover 21,546 arbitrary cursors, 3,456 width cases, 720 rich cases and
+5,664 whitespace/style range/text/stats comparisons; all agree. Font-parser
+probes retain exact numeric captures on malformed/multi-dot inputs as well as
+normal CSS shorthand. Permanent tests retain three compact semantic regressions;
+final unit/static/package/site checks pass (171 tests, 1,026 assertions).
+
+Foreground Chrome/Safari paired native runs freeze the same baseline/current
+sources, use five balanced ABBA/BAAB rounds, and retain 380 timing samples plus
+eight output-parity checks per browser at visible DPR 2. On Safari, internal
+SPACE runs of 4K/8K/16K take 17.5/66/267 ms before the fix; the new preparation is
+below the 1 ms timer resolution. Chrome already optimizes that regex case, so
+its tiny timings do not establish a useful speedup ratio. For 4,096 URL hyphens,
+copied range streaming changes from 2.41 to 0.37 ms in Chrome and 2.7 to 0.4 ms in
+Safari; stats change from 2.195 to 0.228 ms and 2.525 to 0.3 ms respectively.
+Batch ranges already scale linearly and the small normal preparation canary is
+roughly unchanged. These samples establish the large targeted effects, not
+universal speedups or zero-cost short operations. Both canonical benchmark
+snapshots were refreshed as medians of three foreground runs.
+
+Artifacts: `/private/tmp/pretext-merge-audit-20260905/linear-{chrome,safari,firefox}`,
+`linear-audit.json`, `complexity-native`, `complexity-history.md`,
+`complexity-prepare.md` and `complexity-walking.md`. Suite hash:
+`cbf597257a39205e6591cc804762b5b61743e513bdaeb388e669feacde7dd663`. The flat #210/#211 work remains separate.
+
 ## Published-main landing validation
 
 The isolated landing starts at published main `76b4b4e`; unrelated unpublished

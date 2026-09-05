@@ -556,6 +556,16 @@ describe('boundary-policy regressions', () => {
 })
 
 describe('measurement invariants', () => {
+  test('font-size parsing retains pixel and fallback behavior', async () => {
+    const { parseFontSize: parseCssFontSize } = await import('./measurement.ts')
+    for (const [font, expected] of [
+      ['700 12.5px/1.4 Test Sans', 12.5],
+      ['12.34.56px Test Sans', 34.56],
+      ['12\tpx Test Sans', 12],
+      [`${'1'.repeat(4096)}pt Test Sans`, 16],
+    ] as const) expect(parseCssFontSize(font)).toBe(expected)
+  })
+
   test('breakable fit cache distinguishes fit modes', () => {
     const metrics: SegmentMetrics = { width: 80, containsCJK: false }
     const cache = new Map<string, SegmentMetrics>([
@@ -818,6 +828,21 @@ describe('prepare invariants', () => {
     expect(layoutWithLines(unicodeDash, unicodeWidth, LINE_HEIGHT).lines[0]?.text).toBe('https://alpha\u2010')
   })
 
+  test('resumes around preferred boundaries without reusing consumed hyphens', () => {
+    const text = 'https://a-bc-defgh-ij'
+    for (const letterSpacing of [0, 1]) {
+      const prepared = prepareWithSegments(text, FONT, { letterSpacing })
+      const width = measureWidth('bc-def', FONT) + 6 * letterSpacing + 0.1
+      for (const [graphemeIndex, expected] of [[9, '-bc-'], [10, 'bc-'], [11, 'c-'], [19, 'ij']] as const) {
+        const start = { segmentIndex: 0, graphemeIndex }
+        const line = layoutNextLine(prepared, start, width)!
+        expect(line.text).toBe(expected)
+        const range = layoutNextLineRange(prepared, start, width)!
+        expect(materializeLineRange(prepared, range)).toEqual(line)
+      }
+    }
+  })
+
   test('does not prefer hyphen-like boundaries in keep-all runs', () => {
     const text = 'foo-bar日本語'
     const prepared = prepareWithSegments(text, FONT, { wordBreak: 'keep-all' })
@@ -1053,6 +1078,24 @@ describe('prepare invariants', () => {
 })
 
 describe('rich-inline invariants', () => {
+  test('rich boundary trimming preserves internal spaces and non-collapsible content', () => {
+    for (const boundary of [' ', '\t', '\n', '\f', '\r']) {
+      const prepared = prepareRichInline([
+        { text: `${boundary}A${boundary.repeat(64)}B${boundary}`, font: FONT },
+        { text: '', font: FONT },
+        { text: boundary, font: '32px Test Sans' },
+        { text: '\u00A0C\u00A0', font: FONT },
+      ])
+      const range = layoutNextRichInlineLineRange(prepared, Infinity)!
+      const line = materializeRichInlineLineRange(prepared, range)
+      expect(line.fragments.map(fragment => [fragment.itemIndex, fragment.text])).toEqual([
+        [0, 'A B'], [3, '\u00A0C\u00A0'],
+      ])
+      expect(line.fragments[1]!.gapBefore).toBeCloseTo(measureWidth(' ', FONT), 8)
+      expect(range.end).toEqual({ itemIndex: 4, segmentIndex: 0, graphemeIndex: 0 })
+    }
+  })
+
   test('a whole zero-width rich item fits the end of an exactly filled line', () => {
     const prepared = prepareRichInline([
       { text: 'A', font: FONT },

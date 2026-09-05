@@ -8,6 +8,8 @@
 
 ### Fixed
 
+- Rich-inline preparation with long internal whitespace and streaming layout of long hyphenated runs no longer rescan growing portions of the input. Pixel font-size extraction also avoids repeated digit-suffix scans.
+
 - Rich-inline cursors now retain original item indices across empty items, zero-width items can occupy a line, and boundary spaces preserve their font and signed letter spacing. Mutating a visited line no longer changes the walker's continuation.
 - Overlong independent symbol runs can now wrap at grapheme boundaries, with browser-specific punctuation attachment (#208).
 - Numeric minus signs no longer introduce a preferred break before their number, and ASCII hyphens after CJK text stay attached to the preceding character (#213, #215).

@@ -112,7 +112,8 @@ export function getEngineProfile(): EngineProfile {
 }
 
 export function parseFontSize(font: string): number {
-  const m = font.match(/(\d+(?:\.\d+)?)\s*px/)
+  // A failed size can restart at the next digit run, not at every digit in it.
+  const m = font.match(/(?:^|\D)(\d+(?:\.\d+)?)\s*px/)
   return m ? parseFloat(m[1]!) : 16
 }
 

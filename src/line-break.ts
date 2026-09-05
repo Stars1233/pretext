@@ -167,11 +167,19 @@ function getNextPreferredBreakIndex(
   preferredBreakIndex: number,
   graphemeEnd: number,
 ): number {
-  let index = preferredBreakIndex
-  while (index < preferredBreaks.length && preferredBreaks[index]! < graphemeEnd) {
-    index++
+  let lo = preferredBreakIndex
+  if (lo >= preferredBreaks.length || preferredBreaks[lo]! >= graphemeEnd) return lo
+
+  // Batch walking already carries the next boundary. Public continuation
+  // cursors can start anywhere, so seek instead of rescanning every prior cut.
+  let hi = preferredBreaks.length
+  lo++
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2)
+    if (preferredBreaks[mid]! < graphemeEnd) lo = mid + 1
+    else hi = mid
   }
-  return index
+  return lo
 }
 
 function getTerminalLetterSpacing(
