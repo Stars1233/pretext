@@ -504,7 +504,7 @@ function getInternalPrepared(prepared: PreparedText): InternalPreparedText {
 
 // Layout prepared text at a given max width and caller-provided lineHeight.
 // Pure arithmetic on cached widths — no canvas calls, no DOM reads, no string
-// operations, no allocations.
+// operations, and no per-line allocations.
 // ~0.0002ms per text block. Call on every resize.
 //
 // Line breaking rules (matching CSS white-space: normal + overflow-wrap: break-word):

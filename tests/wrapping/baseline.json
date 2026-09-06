@@ -1,4 +1,4 @@
 {
-  "revision": "ac6289f137542ed7d9e46a91089023166d29bd54",
-  "description": "Reviewed wrapping boundary and rich-inline fixes. The runner measures this source and every candidate against the same fresh browser observations; existing mismatches remain observations, never expected answers."
+  "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
+  "description": "Reviewed boundary, rich-inline and shared complex-walker fixes. The runner measures this source and every candidate against the same fresh browser observations; existing mismatches remain observations, never expected answers."
 }

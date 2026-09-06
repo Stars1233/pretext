@@ -51,9 +51,12 @@ word segment where other runtimes separate them.
 
 A single URL can contain many preferred hyphen breaks and produce many narrow
 lines. Restarting the preferred-break search at zero for every continuation made
-streaming and aggregate rich layout quadratic in that run's length. Batch walking
-already carries the next boundary; arbitrary continuation cursors now seek within
+streaming and aggregate rich layout quadratic in that run's length. The simple batch walk
+carries the next boundary; arbitrary continuation cursors seek within
 the sorted break list without rescanning earlier cuts or adding cursor state.
+The shared complex batch walker currently uses those bounded searches per line,
+so its preferred-cut lookup work is O(lines × log(cuts)), not the simple walker’s
+carried-index bound.
 
 Desktop Firefox resolves CSS box widths to 1/60px.
 A headed DPR 2 sweep of 241 box widths from 35px through 36px matched
@@ -63,6 +66,83 @@ independent signed-spacing and ligature thresholds in the full sweep. Box
 resolution does not establish the inline fit threshold, so the line walkers
 retain their existing width handling. Wider Unicode-affix tailoring likewise
 exposed inherited trailing-space admission failures; it remains unmodeled here.
+
+## One Decision For Complex Line Layout
+
+The complex batch and streaming walkers used different priorities after SHY.
+When a later hanging boundary fit, streaming could rewind to an earlier SHY
+while batch layout consumed the later boundary. The source and geometry were
+already available; duplicating the decision algorithm caused the disagreement.
+Complex batch and streaming layout now use one scan loop with the batch
+priority; streaming stops after one line. Scratch values and helpers belong to
+the whole walk, while ordinary text retains its simple fast path. In the full native
+comparison, this preserves every batch line and browser-accuracy result and
+removes the API disagreements in all three browsers. Exact source partition
+diagnostics remain separate from allowed suppressed-control boundary gaps.
+
+Line-start normalization must cross every consecutive consumed-only chunk before
+returning a start. Skipping just one could make a SHY-only chunk terminate the
+paragraph and drop later visible text. Actual empty hard-break chunks still
+produce empty lines; consumed controls are not substitutes for those chunks.
+
+## Original Observations And Resumed Runs
+
+Source cuts, whole-item admission and storage partitions are different facts.
+An original item can span stored SHY/mark pieces; splitting its storage must not
+silently replace the intact observation used to decide whether it fits. A selected
+prefix can also leave a real remaining width that is not determined by the source
+cursor alone. A copied continuation must retain any such history that its model
+needs, rather than reconstructing it from a newly measured suffix.
+
+That does not make arbitrary prefix arithmetic valid. A fresh Safari probe of
+134 restart relationships rejected 61 attempts to splice an original-prefix
+difference onto a freshly measured leading fragment. For Amiri at 16px and zero
+spacing, the inferred width of WJ + acute + b was 12.384px while the direct
+observation was 12.768px. Retaining a whole-item remainder and constructing a new
+partial measurement are different operations. The observation's exact source
+span and shaping context must remain attached to it.
+
+A Unicode count of spacing owners is insufficient too: WJ can advance source
+without owning an extra spacing slot, while WJ with a combining mark changes its
+advance with the original glyph context. Requested-spacing Canvas observations
+resolve some of those cases but disagree with native optional-ligature behavior
+in opposing inputs. Neither a blanket owner count nor a blanket Canvas-spacing
+replacement is accepted. Measuring every possible resumed substring is outside
+the intended bounded preparation model. The broader source-boundary prototype
+therefore remains experimental; these findings do not establish a flat #210 fix.
+
+A separate lossless source-coordinate compiler preserves complete paragraph
+output and reconstructs tested returned cursors from normalized source offsets.
+It must retain measurement-local boundaries: global grapheme segmentation is
+not an equivalent partition. The prototype still lowers into the accepted
+walker, so it establishes representational freedom without establishing a
+simpler algorithm or a native accuracy improvement. Its additional adapter has
+not earned production cost.
+
+## Native Line Extraction Is An Observation
+
+Grouping each grapheme by its first Range rectangle can undercount real lines.
+In three narrow Safari control/combining-mark witnesses, the paragraph height
+and whole Range expose six lines while first-rectangle grouping exposes five.
+A zero-width rectangle on the previous line can precede the actual next-line
+rectangle. Choosing the first positive rectangle is insufficient too: Chrome
+can give the letter after SHY positive rectangles on both the selected hyphen's
+line and the letter's own line.
+
+Extraction also changes the object being observed. A separate 230-input probe
+in each of Chrome and Safari found that inserting grapheme spans changed native
+line counts on two Chrome and ten Safari inputs. Normalizing the source changed
+counts too. Text-node Range, span intervention and original paragraph geometry
+must remain separate; none may silently borrow another stage's height.
+
+The shared observer now retains each selected extraction's source, method,
+height, resolved line height, grapheme fragments and scalar Range rectangles.
+The measured line-box count survives even when source ownership is ambiguous.
+Scalar rectangles come from that same extraction DOM, since a mixed grapheme's
+box does not locate each of its scalars. Known visible mismatches remain failures;
+rectangle order or positivity alone does not establish invisible ownership.
+This is test instrumentation only. The production library still performs no DOM
+measurement, and these findings do not solve missing shaping information.
 
 ## Rich Inline Source Identity And Boundary Spaces
 

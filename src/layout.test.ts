@@ -392,6 +392,24 @@ describe('shared public contracts', () => {
     expect(result.contracts).toEqual([])
   })
 
+  test('public contracts detect lost line metadata even when text and cursors agree', async () => {
+    const api = await import('./layout.ts')
+    const inconsistent = createVariant('inconsistent-line-metadata', {
+      ...api,
+      layoutWithLines(...args: Parameters<typeof api.layoutWithLines>) {
+        const result = api.layoutWithLines(...args)
+        return { ...result, lines: result.lines.map(line => ({ ...line, selectedMarker: null })) }
+      },
+    })
+    const result = inconsistent.predict({
+      id: 'unit-line-metadata', family: 'api', origins: ['maintained'], scope: 'supported',
+      text: 'a\nb', whiteSpace: 'pre-wrap', font: FONT, width: 64, lineHeight: LINE_HEIGHT,
+      wordBreak: 'normal', letterSpacing: 0, direction: 'ltr',
+    })
+    if (result.detail !== 'full') throw new Error('Expected full public contract checks')
+    expect(result.contracts.some(failure => failure.contract === 'fixed-stream/fixed-stream')).toBe(true)
+  })
+
   test('maintained height observations retain the rich prepare/layout route', async () => {
     const api = await import('./layout.ts')
     const richHandles = new WeakSet<object>()
@@ -1794,6 +1812,20 @@ describe('layout invariants', () => {
     expect(layout(prepared, width, LINE_HEIGHT).lineCount).toBe(expected.lineCount)
   })
 
+  test('streaming keeps a later hanging break after an unselected soft hyphen', () => {
+    const width = measureWidth('a-', FONT) + 0.1
+    const prepared = prepareWithSegments('a\u00AD\tb', FONT, { whiteSpace: 'pre-wrap' })
+    const result = variant.predict({
+      id: 'unit-shy-hanging-break', family: 'api', origins: ['maintained'], scope: 'supported',
+      text: 'a\u00AD\tb', whiteSpace: 'pre-wrap', font: FONT, width, lineHeight: LINE_HEIGHT,
+      wordBreak: 'normal', letterSpacing: 0, direction: 'ltr',
+    })
+    if (result.detail !== 'full') throw new Error('Expected full public contract checks')
+    expect(result.lines.map(line => line.text)).toEqual(['a\t', 'b'])
+    expect(result.contracts).toEqual([])
+    expect(collectStreamedLines(prepared, width)).toEqual(layoutWithLines(prepared, width, LINE_HEIGHT).lines)
+  })
+
   test('pre-wrap mode keeps empty lines from consecutive hard breaks', () => {
     const prepared = prepareWithSegments('\n\n', FONT, { whiteSpace: 'pre-wrap' })
     const lines = layoutWithLines(prepared, 200, LINE_HEIGHT)
@@ -1804,6 +1836,29 @@ describe('layout invariants', () => {
     const mixedLines = layoutWithLines(mixed, 200, LINE_HEIGHT)
     expect(mixedLines.lines.map(line => line.text)).toEqual(['中文', '', '世界'])
     expect(collectStreamedLines(mixed, 200)).toEqual(mixedLines.lines)
+  })
+
+  test('consecutive consumed-only chunks retain the visible tail and real empty lines', () => {
+    for (const control of ['\u00AD', '\u200B']) for (const prefix of ['', 'a\n']) for (const emptyLine of ['', '\n']) {
+      const prepared = prepareWithSegments(prefix + control + '\n' + control + '\n' + emptyLine + 'b', FONT, { whiteSpace: 'pre-wrap' })
+      const expected = [...(prefix ? ['a'] : []), ...(emptyLine ? [''] : []), 'b']
+      const batch = layoutWithLines(prepared, 100, LINE_HEIGHT)
+      expect(batch.lines.map(line => line.text)).toEqual(expected)
+      expect(layout(prepared, 100, LINE_HEIGHT).lineCount).toBe(expected.length)
+      expect(measureLineStats(prepared, 100).lineCount).toBe(expected.length)
+      const ranges: NonNullable<ReturnType<LayoutModule['layoutNextLineRange']>>[] = []
+      walkLineRanges(prepared, 100, line => ranges.push(line))
+      const streamed: NonNullable<ReturnType<LayoutModule['layoutNextLineRange']>>[] = []
+      let cursor = { segmentIndex: 0, graphemeIndex: 0 }
+      for (let lineIndex = 0; lineIndex <= expected.length; lineIndex++) {
+        const line = layoutNextLineRange(prepared, JSON.parse(JSON.stringify(cursor)) as typeof cursor, 100)
+        if (line === null) break
+        streamed.push(line)
+        cursor = JSON.parse(JSON.stringify(line.end)) as typeof cursor
+      }
+      expect(streamed).toEqual(ranges)
+      expect(streamed.map(line => materializeLineRange(prepared, line).text)).toEqual(expected)
+    }
   })
 
   test('pre-wrap mode does not invent an extra trailing empty line', () => {

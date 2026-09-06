@@ -19,7 +19,9 @@ See [the wrapping suite](tests/wrapping/README.md) for worktree comparisons,
 known-failure reporting, native observation limits and reproducible case IDs.
 Its default gate requires the maintained absolute checks and rejects lost baseline
 successes elsewhere; it does not claim zero total incompatibilities. The ordinary
-and full schedules use the same assertions.
+and full schedules use the same assertions. Public API comparisons retain every
+serialized line field, including any selected-break metadata, while comparing
+widths with their existing numeric tolerance.
 
 ### Packaging And Release
 
@@ -55,6 +57,16 @@ snapshot; a successful report from an unrelated page is not a benchmark result.
 For portable Chrome correctness checks, use `bun run test:wrapping --transport=playwright --browser=chrome`. This launches installed Chrome in an isolated headed browser with its native viewport; it does not require AppleScript or a Unix shell. Install Chrome normally first; the adapter uses `playwright-core` without downloading another browser. Automation locks use the platform's temporary directory. The page server runs the current Bun executable directly, and includes demo pages as well as diagnostics. Safari continues to use the native macOS path; Playwright WebKit is not treated as Safari. This transport is for correctness checks only; benchmark scripts retain foreground native automation. Check the recorded DPR and real target fonts when validating platform-specific font issues.
 
 When a probe finds a first-break mismatch, the report includes a short trace. `sN:gM` identifies a segment and grapheme; `[ours]` and `[browser]` identify the competing break positions. Safari `Range` extraction can be wrong around preserved whitespace and URL queries even when the rendered height is correct, so compare `--method=span` before changing the engine.
+
+The shared suite records the original paragraph and the selected extraction as
+separate observations. Normalizing the source or inserting spans can change
+wrapping. Each extraction therefore retains its exact source, method, height,
+resolved line height and all rectangles. Its line count comes from its own height,
+not from grouping source rectangles. Exact boundary checks use only established
+source ownership; ambiguous control or whitespace rectangles stay unobserved.
+Observer v1 captures lack this stage geometry and cannot be retroactively used
+as v2 extraction evidence. Fresh comparisons run both library versions against
+the same observer; changing an observer is not a library accuracy improvement.
 
 ### Corpus Tooling
 

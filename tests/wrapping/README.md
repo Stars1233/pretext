@@ -51,13 +51,45 @@ Height, extracted line count/boundaries, source placement, whitespace, widths,
 selected hyphens, public API contracts and selected native rich-item heights
 remain separate. `unobserved` and
 `not-applicable` are never passes. Interrupted API groups retain their failures
-and discard partial passes. API agreement does not establish native correctness.
+and discard partial passes. API agreement does not establish native correctness. Line comparisons include all
+serialized returned fields, so agreeing text and source positions cannot hide
+lost break metadata. Widths retain their existing numeric tolerance.
 The numeric companion covers nine environment profiles, prohibits Canvas calls
 after preparation, and retains the unverified-profile TAB compatibility checks.
 
 Most native observations use one unmodified text node and scalar `Range`
 rectangles. Compact maintained cases also preserve their selected Range/span
-extractor; span boundaries can change shaping, so those results stay distinct.
+extractor. Observer version 2 retains each extraction's exact normalized source,
+method, own height, resolved line-height, every grapheme/scalar rectangle and
+whole-content rectangles. Extraction count comes from that experiment's height, not the number
+of inferred source groups. Normalizing source or inserting spans can change
+wrapping; neither experiment replaces the original paragraph's observations.
+
+Boundary comparisons use all positive rectangles of a visible source scalar. A
+carried zero rectangle cannot move it to an earlier line, and positive rectangles
+on multiple lines do not establish one source owner. Invisible controls and
+whitespace likewise do not acquire exact consumed endpoints from rectangle
+order or positivity. An internal unknown between established visible endpoints
+cannot change that source envelope. In normal mode, the existing suppressed-boundary
+contract also removes collapsed ASCII SPACE from compared starts and ends without
+assigning it to either line. The selected span protocol can establish a literal
+preserved SPACE or TAB's source placement when its single nonempty element
+fragment agrees with its scalar Range in that same DOM. This does not turn its
+hanging width into a painted endpoint: the existing boundary comparison still
+trims line ends. Multiple, empty or conflicting fragments remain unobserved.
+For pre-wrap LF, a measured extraction count equal to the number of forced
+source lines excludes additional soft wraps and establishes their whitespace
+boundaries, including consecutive empty lines and the absence of an extra line
+after trailing LF. Other uncertain endpoint controls remain unobserved even on
+a control-only hard line. Non-breaking spaces and other leading/trailing
+controls retain their uncertainty. Known visible mismatches
+remain failures; partial endpoint agreement is `unobserved`, not an exact-boundary
+pass. Required metrics remain required even when their evidence is ambiguous.
+
+Version 1 reports retain their recorded assessments and legacy source groups.
+Those groups lack the extraction's own geometry and cannot be converted into
+version 2 observations. Reassessing such a record leaves selected extraction
+count/boundaries unobserved; original paragraph metrics can still be assessed.
 Canonical accuracy and corpus cases retain their height-only scope. Corpus
 native paragraphs use documented whitespace normalization while the candidate
 still receives the original source.

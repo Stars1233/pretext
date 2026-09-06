@@ -8,6 +8,8 @@
 
 ### Fixed
 
+- Streaming line layouts and line statistics now agree with batch layout when a later break follows a soft hyphen. Streaming also retains later text after consecutive lines containing only invisible break controls (#222).
+
 - Rich-inline preparation with long internal whitespace and streaming layout of long hyphenated runs no longer rescan growing portions of the input. Pixel font-size extraction also avoids repeated digit-suffix scans.
 
 - Rich-inline cursors now retain original item indices across empty items, zero-width items can occupy a line, and boundary spaces preserve their font and signed letter spacing. Mutating a visited line no longer changes the walker's continuation.

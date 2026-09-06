@@ -61,9 +61,21 @@ function sameWidth(a: number, b: number): boolean {
   return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) < 0.000001
 }
 
+function orderedJSONValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(orderedJSONValue)
+  if (value === null || typeof value !== 'object') return value
+  const record = value as Record<string, unknown>
+  const ordered: Record<string, unknown> = {}
+  for (const key of Object.keys(record).sort()) ordered[key] = orderedJSONValue(record[key])
+  return ordered
+}
+
 function sameLine(a: Line | null, b: Line | null): boolean {
   if (a === null || b === null) return a === b
-  return a.text === b.text && sameWidth(a.width, b.width) && sameCursor(a.start, b.start) && sameCursor(a.end, b.end)
+  if (!sameWidth(a.width, b.width)) return false
+  // Paint metadata can differ even when text and source cursors agree. Compare
+  // every returned field without prescribing an experimental representation.
+  return JSON.stringify(orderedJSONValue({ ...a, width: 0 })) === JSON.stringify(orderedJSONValue({ ...b, width: 0 }))
 }
 
 function sameLines(a: Line[], b: Line[]): boolean {
