@@ -56,12 +56,27 @@ export type Assessment = {
 
 export type NativeRect = { x: number; y: number; width: number; height: number }
 export type NativePoint = { start: number; end: number; text: string; rects: NativeRect[] }
+export type NativeExtraction = {
+  method: 'range' | 'span'
+  // The exact documented-normalized source laid out by this intervention.
+  source: string
+  height: number
+  usedLineHeight: number
+  units: NativePoint[]
+  // Scalar rectangles inside the same extraction DOM retain visible evidence
+  // even when a grapheme unit also contains an invisible formatting control.
+  points: NativePoint[]
+  lineRects: NativeRect[]
+}
 export type NativeObservation = {
   height: number
   lineCount: number
   usedLineHeight?: number
   points: NativePoint[]
   lineRects: NativeRect[]
+  extraction?: NativeExtraction
+  // Observer v1 source groups lack extraction-stage geometry. Retained only
+  // for reading old records; they cannot reconstruct a NativeExtraction.
   extractedLines?: Array<{ start: number; end: number }>
   richHeight?: number
 }
@@ -106,7 +121,7 @@ export type BrowserEnvironment = {
 
 export type BrowserReport = {
   status: 'ready'
-  observerVersion: 1
+  observerVersion: 2
   contexts: Array<Extract<BrowserContext, { kind: 'installed' }>>
   rowCount: number
   environment: BrowserEnvironment

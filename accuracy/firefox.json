@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-06T10:15:09.247Z",
-  "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
+  "generatedAt": "2026-09-06T11:09:43.297Z",
+  "suiteHash": "0f51943935e2ee005c52dfb58236dc42e0ce23b303c631c9cec6535e70a42d51",
   "source": {
-    "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
+    "revision": "d5810efd14aa9ba9fd2b10b990abb58bbf2faab0",
     "files": {
       "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
       "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",

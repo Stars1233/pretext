@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import type { Prediction } from './contracts.ts'
 import { assess } from './observe.ts'
-import type { NativeObservation, NativePoint, WrappingCase } from './types.ts'
+import type { NativeExtraction, NativeObservation, NativePoint, WrappingCase } from './types.ts'
 
 const base: WrappingCase = {
   id: 'observer', family: 'observer', origins: ['observer-unit-test'], text: '',
@@ -26,6 +26,10 @@ function point(text: string, start: number, line: number): NativePoint {
 
 function native(points: NativePoint[], lineCount: number): NativeObservation {
   return { points, lineCount, height: lineCount * 48, lineRects: [] }
+}
+
+function extraction(source: string, units: NativePoint[], count: number, method: 'range' | 'span' = 'range'): NativeExtraction {
+  return { method, source, units, points: units, height: count * 48, usedLineHeight: 48, lineRects: [] }
 }
 
 test('rich inline height is independently observed and cannot inherit a flat or API pass', () => {
@@ -139,24 +143,186 @@ test('maintained height criteria keep their original exact and rounding semantic
   expect(assess({ ...input, heightMode: 'accuracy' }, { ...oracle, height: predicted.height - 1 }, predicted, 'chrome').height.status).toBe('fail')
 })
 
-test('selected line extraction independently checks count and normalized source breaks', () => {
-  const input: WrappingCase = { ...base, text: 'ab cd', lineMethod: 'span' }
-  const oracle = { ...native([point('a', 0, 0), point('b', 1, 0), point('c', 3, 1), point('d', 4, 1)], 2), extractedLines: [{ start: 0, end: 2 }, { start: 3, end: 5 }] }
-  const correct = prediction(input.text, [['ab', 0, 3], ['cd', 3, 5]])
+test('selected extraction keeps its own height and proves unambiguous visible boundaries', () => {
+  const input: WrappingCase = { ...base, text: 'abcd', lineMethod: 'span' }
+  const units = [point('a', 0, 0), point('b', 1, 0), point('c', 2, 1), point('d', 3, 1)]
+  const oracle = { ...native(units, 2), extraction: extraction(input.text, units, 2, 'span') }
+  const correct = prediction(input.text, [['ab', 0, 2], ['cd', 2, 4]])
   expect(assess(input, oracle, correct, 'chrome').lineCount.status).toBe('pass')
   expect(assess(input, oracle, correct, 'chrome').breaks.status).toBe('pass')
-  const wrong = prediction(input.text, [['a', 0, 1], ['b cd', 1, 5]])
+  const wrong = prediction(input.text, [['a', 0, 1], ['bcd', 1, 4]])
   expect(assess(input, oracle, wrong, 'chrome').lineCount.status).toBe('pass')
   expect(assess(input, oracle, wrong, 'chrome').breaks.status).toBe('fail')
-  const countMismatch = { ...oracle, extractedLines: [{ start: 0, end: 5 }] }
+  // A span intervention can change wrapping while the original text node does not.
+  const countMismatch = { ...oracle, extraction: { ...oracle.extraction, height: 3 * 48 } }
   expect(assess(input, countMismatch, correct, 'chrome').height.status).toBe('pass')
+  expect(assess(input, countMismatch, correct, 'chrome').source.status).toBe('pass')
   expect(assess(input, countMismatch, correct, 'chrome').lineCount.status).toBe('fail')
-  expect(assess(input, native(oracle.points, 2), correct, 'chrome').lineCount.status).toBe('unobserved')
+  const differentSource = { ...oracle, extraction: { ...oracle.extraction, source: 'other source' } }
+  expect(assess(input, differentSource, correct, 'chrome').lineCount.status).toBe('unobserved')
+  const differentMethod = { ...oracle, extraction: { ...oracle.extraction, method: 'range' as const } }
+  expect(assess(input, differentMethod, correct, 'chrome').breaks.status).toBe('unobserved')
+})
+
+test('legacy source groups cannot supply missing extraction-stage geometry', () => {
+  const input: WrappingCase = { ...base, text: 'ab', lineMethod: 'range' }
+  const legacy = { ...native([point('a', 0, 0), point('b', 1, 1)], 2), extractedLines: [{ start: 0, end: 2 }] }
+  const correct = prediction(input.text, [['a', 0, 1], ['b', 1, 2]])
+  const result = assess(input, legacy, correct, 'safari')
+  expect(result.height.status).toBe('pass')
+  expect(result.source.status).toBe('pass')
+  expect(result.lineCount.status).toBe('unobserved')
+  expect(result.breaks.status).toBe('unobserved')
+})
+
+test('collapsed normal-mode SPACE ownership cannot change the visible boundary envelope', () => {
+  const input: WrappingCase = { ...base, text: 'ab cd', lineMethod: 'span' }
+  const space: NativePoint = { text: ' ', start: 2, end: 3, rects: [] }
+  const units = [point('a', 0, 0), point('b', 1, 0), space, point('c', 3, 1), point('d', 4, 1)]
+  const oracle = { ...native(units, 2), extraction: extraction(input.text, units, 2, 'span') }
+  const trailingSpace = prediction(input.text, [['ab', 0, 3], ['cd', 3, 5]])
+  const leadingSpace = prediction(input.text, [['ab', 0, 2], ['cd', 2, 5]])
+  expect(assess(input, oracle, trailingSpace, 'safari').breaks.status).toBe('pass')
+  expect(assess(input, oracle, leadingSpace, 'safari').breaks.status).toBe('pass')
+  expect(assess({ ...input, whiteSpace: 'pre-wrap' }, oracle, trailingSpace, 'safari').breaks.status).toBe('unobserved')
+  const extraLine = prediction(input.text, [['ab', 0, 2], ['', 2, 3], ['cd', 3, 5]])
+  expect(assess(input, oracle, extraLine, 'safari').breaks.status).toBe('fail')
+  const nbsp = { ...input, text: 'ab\u00a0cd' }
+  const nbspUnits = units.map(unit => unit === space ? { ...unit, text: '\u00a0' } : unit)
+  const nbspOracle = { ...native(nbspUnits, 2), extraction: extraction(nbsp.text, nbspUnits, 2, 'span') }
+  expect(assess(nbsp, nbspOracle, prediction(nbsp.text, [['ab', 0, 3], ['cd', 3, 5]]), 'safari').breaks.status).toBe('unobserved')
+})
+
+test('preserved LF topology establishes hard-line endpoints only when its measured count excludes soft wraps', () => {
+  const input: WrappingCase = { ...base, lineMethod: 'range', whiteSpace: 'pre-wrap' }
+  function check(text: string, spans: Array<[string, number, number]>) {
+    const predicted = prediction(text, spans)
+    const points = spans.flatMap(([, start, end], line) => Array.from(text.slice(start, end), (scalar, offset) =>
+      /[ \t\n\u00ad\u200b\u2060]/u.test(scalar)
+        ? { text: scalar, start: start + offset, end: start + offset + 1, rects: [] }
+        : point(scalar, start + offset, line)))
+    const oracle = { ...native(points, spans.length), extraction: extraction(text, points, spans.length) }
+    return { result: assess({ ...input, text }, oracle, predicted, 'safari'), oracle, predicted }
+  }
+  for (const [text, spans] of [
+    ['', []],
+    ['\n', [['', 0, 1]]],
+    ['\n\n', [['', 0, 1], ['', 1, 2]]],
+    ['a\n', [['a', 0, 2]]],
+    [' \n\t\nb', [[' ', 0, 2], ['\t', 2, 4], ['b', 4, 5]]],
+    ['a\n  b', [['a', 0, 2], ['  b', 2, 5]]],
+    ['a\u2060b\n', [['ab', 0, 4]]],
+  ] as Array<[string, Array<[string, number, number]>]>) expect(check(text, spans).result.breaks.status).toBe('pass')
+  for (const [text, spans] of [
+    ['\u2060\n', [['\u2060', 0, 2]]],
+    ['\n\u200b\n', [['', 0, 1], ['\u200b', 1, 3]]],
+    ['a\n\u00ad', [['a', 0, 2], ['\u00ad', 2, 3]]],
+    ['ab\nc', [['a', 0, 1], ['b', 1, 3], ['c', 3, 4]]],
+  ] as Array<[string, Array<[string, number, number]>]>) expect(check(text, spans).result.breaks.status).toBe('unobserved')
+  const { oracle, predicted } = check('a\nb', [['a', 0, 2], ['b', 2, 3]])
+  oracle.extraction.points[2] = point('b', 2, 0)
+  expect(assess({ ...input, text: 'a\nb' }, oracle, predicted, 'safari').breaks.status).toBe('fail')
+  const indent = check(' a\n', [[' a', 0, 3]])
+  expect(assess({ ...input, text: ' a\n' }, indent.oracle, prediction(' a\n', [['a', 1, 3]]), 'safari').breaks.status).toBe('fail')
+})
+
+test('literal preserved span boxes can establish whitespace ownership without interpreting arbitrary Range rectangles', () => {
+  const input: WrappingCase = { ...base, text: 'a b', lineMethod: 'span', whiteSpace: 'pre-wrap' }
+  const units = [point('a', 0, 0), point(' ', 1, 0), point('b', 2, 1)]
+  const stage = extraction(input.text, units, 2, 'span')
+  const oracle = { ...native(units, 2), extraction: stage }
+  const correct = prediction(input.text, [['a ', 0, 2], ['b', 2, 3]])
+  expect(assess(input, oracle, correct, 'safari').breaks.status).toBe('pass')
+  expect(assess(input, oracle, prediction(input.text, [['a', 0, 1], [' b', 1, 3]]), 'safari').breaks.status).toBe('fail')
+  const unknownSpace = { ...units[1]!, rects: [] }
+  const zeroSpace = { ...units[1]!, rects: units[1]!.rects.map(rect => ({ ...rect, width: 0 })) }
+  for (const [box, scalar] of [
+    [unknownSpace, units[1]!],
+    [zeroSpace, zeroSpace],
+    [{ ...units[1]!, rects: [...units[1]!.rects, ...zeroSpace.rects] }, units[1]!],
+    [units[1]!, point(' ', 1, 1)],
+    [{ ...units[1]!, text: ' \u0301', end: 3 }, units[1]!],
+  ]) {
+    const ambiguous = { ...stage, units: [units[0]!, box!, units[2]!], points: [units[0]!, scalar!, units[2]!] }
+    expect(assess(input, { ...oracle, extraction: ambiguous }, correct, 'safari').breaks.status).toBe('unobserved')
+  }
+  expect(assess({ ...input, lineMethod: 'range' }, { ...oracle, extraction: { ...stage, method: 'range' } }, correct, 'safari').breaks.status).toBe('unobserved')
+  for (const scalar of ['\t', '\u00a0', '\u2060']) {
+    const text = `a${scalar}b`
+    const points = units.map(unit => unit.start === 1 ? { ...unit, text: scalar } : unit)
+    const result = assess({ ...input, text }, { ...oracle, extraction: extraction(text, points, 2, 'span') }, prediction(text, [[text.slice(0, 2), 0, 2], ['b', 2, 3]]), 'safari')
+    expect(result.breaks.status).toBe(scalar === '\t' ? 'pass' : 'unobserved')
+  }
+})
+
+test('mixed graphemes retain visible scalar evidence and internal controls do not obscure fixed endpoints', () => {
+  const input: WrappingCase = { ...base, text: 'a\u200db', lineMethod: 'range' }
+  const a = point('a', 0, 0), b = point('b', 2, 0)
+  const control: NativePoint = { text: '\u200d', start: 1, end: 2, rects: [] }
+  const mixed: NativePoint = { text: 'a\u200d', start: 0, end: 2, rects: [] }
+  const stage = { ...extraction(input.text, [mixed, b], 1), points: [a, control, b] }
+  const oracle = { ...native(stage.points, 1), extraction: stage }
+  const correct = prediction(input.text, [['ab', 0, 3]])
+  expect(assess(input, oracle, correct, 'safari').breaks.status).toBe('pass')
+  const wrong = prediction(input.text, [['', 0, 0], ['ab', 0, 3]])
+  expect(assess(input, oracle, wrong, 'safari').breaks.status).toBe('fail')
+  for (const text of ['\u200dab', 'ab\u200d']) {
+    const points = Array.from(text, (scalar, index) => scalar === '\u200d'
+      ? { text: scalar, start: index, end: index + 1, rects: [] }
+      : point(scalar, index, 0))
+    const edgeOracle = { ...native(points, 1), extraction: extraction(text, points, 1) }
+    expect(assess({ ...input, text }, edgeOracle, prediction(text, [['ab', 0, 3]]), 'safari').breaks.status).toBe('unobserved')
+  }
+})
+
+test('carried zero rectangles do not erase a line or assign invisible source ownership', () => {
+  // Captured Safari Arial16, pre-wrap, width0: a / WJ / acute / b / ZWSP / i.
+  // WJ has two zero rectangles; even ZWSP has a positive rectangle.
+  const input: WrappingCase = { ...base, text: 'a\u2060\u0301b\u200Bi', lineMethod: 'range', whiteSpace: 'pre-wrap', width: 0, lineHeight: 24 }
+  const rect = (y: number, width: number) => ({ x: 0, y, width, height: 17 })
+  const units: NativePoint[] = [
+    { text: 'a', start: 0, end: 1, rects: [rect(3, 8.8984375)] },
+    { text: '\u2060', start: 1, end: 2, rects: [rect(3, 0), rect(27, 0)] },
+    { text: '\u0301', start: 2, end: 3, rects: [rect(27, 0), rect(51, 2.96875)] },
+    { text: 'b', start: 3, end: 4, rects: [rect(51, 0), rect(75, 8.8984375)] },
+    { text: '\u200B', start: 4, end: 5, rects: [rect(75, 0), rect(99, 2.96875)] },
+    { text: 'i', start: 5, end: 6, rects: [rect(99, 0), rect(123, 3.5546875)] },
+  ]
+  const stage: NativeExtraction = { method: 'range', source: input.text, height: 144, usedLineHeight: 24, units, points: units, lineRects: [rect(3, 8.8984375), rect(27, 0), rect(51, 2.96875), rect(75, 8.8984375), rect(99, 2.96875), rect(123, 3.5546875)] }
+  const oracle: NativeObservation = { height: 144, lineCount: 6, points: units, lineRects: stage.lineRects, extraction: stage }
+  const six = prediction(input.text, units.map(unit => [unit.text, unit.start, unit.end]))
+  six.height = six.countedHeight = 144
+  expect(assess(input, oracle, six, 'safari').height.status).toBe('pass')
+  expect(assess(input, oracle, six, 'safari').lineCount.status).toBe('pass')
+  expect(assess(input, oracle, six, 'safari').breaks.status).toBe('unobserved')
+  const five = prediction(input.text, [['a\u2060', 0, 2], ['\u0301', 2, 3], ['b', 3, 4], ['\u200B', 4, 5], ['i', 5, 6]])
+  five.height = five.countedHeight = 120
+  expect(assess(input, oracle, five, 'safari').lineCount.status).toBe('fail')
+  expect(assess(input, oracle, five, 'safari').breaks.status).toBe('fail')
+  const wrong = prediction(input.text, [['a', 0, 1], ['\u2060', 1, 2], ['', 2, 2], ['\u0301b', 2, 4], ['\u200B', 4, 5], ['i', 5, 6]])
+  wrong.height = wrong.countedHeight = 144
+  expect(assess(input, oracle, wrong, 'safari').lineCount.status).toBe('pass')
+  expect(assess(input, oracle, wrong, 'safari').breaks.status).toBe('fail')
+})
+
+test('multiple positive rectangles cannot choose the following letter source line', () => {
+  // Chrome's b after a selected SHY carries the preceding hyphen rectangle.
+  const input: WrappingCase = { ...base, text: 'a\u00adb', lineMethod: 'range' }
+  const b = point('b', 2, 1)
+  b.rects.push(...point('b', 2, 2).rects)
+  const units = [point('a', 0, 0), point('\u00ad', 1, 1), b]
+  const oracle = { ...native(units, 3), extraction: extraction(input.text, units, 3) }
+  const correctCount = prediction(input.text, [['a', 0, 1], ['-', 1, 2], ['b', 2, 3]])
+  expect(assess(input, oracle, correctCount, 'chrome').lineCount.status).toBe('pass')
+  expect(assess(input, oracle, correctCount, 'chrome').breaks.status).toBe('unobserved')
+  b.rects.reverse()
+  expect(assess(input, oracle, correctCount, 'chrome').breaks.status).toBe('unobserved')
 })
 
 test('legacy geometry uses its actual layout height and materialized line count', () => {
   const input: WrappingCase = { ...base, text: 'a', heightMode: 'exact', heightSource: 'layout', lineMethod: 'span' }
-  const oracle = { ...native([point('a', 0, 0)], 1), extractedLines: [{ start: 0, end: 1 }] }
+  const units = [point('a', 0, 0)]
+  const oracle = { ...native(units, 1), extraction: extraction(input.text, units, 1, 'span') }
   const result = { ...prediction('a', [['a', 0, 1]]), height: 96, lineCount: 2 }
   expect(assess(input, oracle, result, 'chrome').height.status).toBe('pass')
   expect(assess(input, oracle, result, 'chrome').lineCount.status).toBe('pass')

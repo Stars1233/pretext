@@ -156,7 +156,7 @@ export async function runBrowser(variants: Variant[]): Promise<void> {
       for (const variant of variants) richContracts.push({ name: variant.name, font, letterSpacing, ...variant.checkRichContracts({ font, letterSpacing }, includeStructure) })
     }
     const report: BrowserReport = {
-      status: 'ready', observerVersion: 1, contexts, rowCount: inputs.length, richContracts,
+      status: 'ready', observerVersion: 2, contexts, rowCount: inputs.length, richContracts,
       environment: {
         context: config.context,
         userAgent: navigator.userAgent, dpr: devicePixelRatio,

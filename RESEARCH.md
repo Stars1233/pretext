@@ -111,6 +111,39 @@ replacement is accepted. Measuring every possible resumed substring is outside
 the intended bounded preparation model. The broader source-boundary prototype
 therefore remains experimental; these findings do not establish a flat #210 fix.
 
+A separate lossless source-coordinate compiler preserves complete paragraph
+output and reconstructs tested returned cursors from normalized source offsets.
+It must retain measurement-local boundaries: global grapheme segmentation is
+not an equivalent partition. The prototype still lowers into the accepted
+walker, so it establishes representational freedom without establishing a
+simpler algorithm or a native accuracy improvement. Its additional adapter has
+not earned production cost.
+
+## Native Line Extraction Is An Observation
+
+Grouping each grapheme by its first Range rectangle can undercount real lines.
+In three narrow Safari control/combining-mark witnesses, the paragraph height
+and whole Range expose six lines while first-rectangle grouping exposes five.
+A zero-width rectangle on the previous line can precede the actual next-line
+rectangle. Choosing the first positive rectangle is insufficient too: Chrome
+can give the letter after SHY positive rectangles on both the selected hyphen's
+line and the letter's own line.
+
+Extraction also changes the object being observed. A separate 230-input probe
+in each of Chrome and Safari found that inserting grapheme spans changed native
+line counts on two Chrome and ten Safari inputs. Normalizing the source changed
+counts too. Text-node Range, span intervention and original paragraph geometry
+must remain separate; none may silently borrow another stage's height.
+
+The shared observer now retains each selected extraction's source, method,
+height, resolved line height, grapheme fragments and scalar Range rectangles.
+The measured line-box count survives even when source ownership is ambiguous.
+Scalar rectangles come from that same extraction DOM, since a mixed grapheme's
+box does not locate each of its scalars. Known visible mismatches remain failures;
+rectangle order or positivity alone does not establish invisible ownership.
+This is test instrumentation only. The production library still performs no DOM
+measurement, and these findings do not solve missing shaping information.
+
 ## Rich Inline Source Identity And Boundary Spaces
 
 A rich item has source identity independently of its measured width. Filtering

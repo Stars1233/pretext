@@ -58,6 +58,16 @@ For portable Chrome correctness checks, use `bun run test:wrapping --transport=p
 
 When a probe finds a first-break mismatch, the report includes a short trace. `sN:gM` identifies a segment and grapheme; `[ours]` and `[browser]` identify the competing break positions. Safari `Range` extraction can be wrong around preserved whitespace and URL queries even when the rendered height is correct, so compare `--method=span` before changing the engine.
 
+The shared suite records the original paragraph and the selected extraction as
+separate observations. Normalizing the source or inserting spans can change
+wrapping. Each extraction therefore retains its exact source, method, height,
+resolved line height and all rectangles. Its line count comes from its own height,
+not from grouping source rectangles. Exact boundary checks use only established
+source ownership; ambiguous control or whitespace rectangles stay unobserved.
+Observer v1 captures lack this stage geometry and cannot be retroactively used
+as v2 extraction evidence. Fresh comparisons run both library versions against
+the same observer; changing an observer is not a library accuracy improvement.
+
 ### Corpus Tooling
 
 - `bun run corpus-check` — diagnose one corpus at one or a few widths

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T10:15:09.285Z",
+  "generatedAt": "2026-09-06T11:10:40.258Z",
   "sources": {
     "accuracy": {
       "chrome": "accuracy/chrome.json",
@@ -34,7 +34,7 @@
     "total": 28,
     "geometryMatchCount": 28,
     "geometryMismatchCount": 0,
-    "firstBreakMismatchCount": 7
+    "firstBreakMismatchCount": 0
   },
   "benchmarks": {
     "chrome": {
