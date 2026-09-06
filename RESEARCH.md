@@ -85,6 +85,32 @@ returning a start. Skipping just one could make a SHY-only chunk terminate the
 paragraph and drop later visible text. Actual empty hard-break chunks still
 produce empty lines; consumed controls are not substitutes for those chunks.
 
+## Original Observations And Resumed Runs
+
+Source cuts, whole-item admission and storage partitions are different facts.
+An original item can span stored SHY/mark pieces; splitting its storage must not
+silently replace the intact observation used to decide whether it fits. A selected
+prefix can also leave a real remaining width that is not determined by the source
+cursor alone. A copied continuation must retain any such history that its model
+needs, rather than reconstructing it from a newly measured suffix.
+
+That does not make arbitrary prefix arithmetic valid. A fresh Safari probe of
+134 restart relationships rejected 61 attempts to splice an original-prefix
+difference onto a freshly measured leading fragment. For Amiri at 16px and zero
+spacing, the inferred width of WJ + acute + b was 12.384px while the direct
+observation was 12.768px. Retaining a whole-item remainder and constructing a new
+partial measurement are different operations. The observation's exact source
+span and shaping context must remain attached to it.
+
+A Unicode count of spacing owners is insufficient too: WJ can advance source
+without owning an extra spacing slot, while WJ with a combining mark changes its
+advance with the original glyph context. Requested-spacing Canvas observations
+resolve some of those cases but disagree with native optional-ligature behavior
+in opposing inputs. Neither a blanket owner count nor a blanket Canvas-spacing
+replacement is accepted. Measuring every possible resumed substring is outside
+the intended bounded preparation model. The broader source-boundary prototype
+therefore remains experimental; these findings do not establish a flat #210 fix.
+
 ## Rich Inline Source Identity And Boundary Spaces
 
 A rich item has source identity independently of its measured width. Filtering

@@ -1,9 +1,9 @@
 [
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -27,7 +27,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -43,10 +43,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -70,7 +70,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -175,10 +175,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -202,7 +202,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -267,10 +267,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -294,7 +294,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -351,10 +351,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -378,7 +378,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -394,10 +394,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -421,7 +421,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -437,10 +437,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -464,7 +464,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -625,10 +625,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -652,7 +652,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -725,10 +725,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -752,7 +752,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -785,10 +785,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -812,7 +812,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -837,10 +837,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -864,7 +864,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -880,10 +880,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -907,7 +907,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -923,10 +923,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -950,7 +950,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -966,10 +966,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -993,7 +993,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -1018,10 +1018,10 @@
     ]
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -1045,7 +1045,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -1061,10 +1061,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -1088,7 +1088,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -1104,10 +1104,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -1131,7 +1131,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],
@@ -1147,10 +1147,10 @@
     "mismatches": []
   },
   {
-    "generatedAt": "2026-09-06T10:00:12.191Z",
-    "suiteHash": "0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f",
+    "generatedAt": "2026-09-06T10:15:09.247Z",
+    "suiteHash": "c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa",
     "source": {
-      "revision": "cdc34f13ebb6cbf7511d568b98d4ed98a6e05c68",
+      "revision": "2b73992faeb92b3247cd390871180b8588fe1a95",
       "files": {
         "analysis.ts": "b129a4890a7d171f5ae112c5473f941fab38376c178f2b23a3da7f2878dba647",
         "bidi.ts": "c5962b925739049f7d03d8b6f2144a0f84d9e6b26f9900bc0d3f0b92dc20eb51",
@@ -1174,7 +1174,7 @@
         "dpr": 2,
         "locale": "zh-CN",
         "visibility": "visible",
-        "focused": false,
+        "focused": true,
         "fonts": []
       }
     ],

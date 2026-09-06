@@ -30,8 +30,10 @@ mutated callbacks, reentrant calls and copied continuations.
 
 All 33,622 ordinary observations pass the final baseline-preservation and maintained
 absolute gates. Nine numeric environment profiles pass too. The final ordinary
-suite hash is `0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f`.
-The exploratory full run uses additional proposed source obligations already
+suite hash is `c3f9748217abee9c8b2c72c79c5c8ff7a7bc77c84b6cfae5b7508864b5d346fa`.
+After reviewing the per-case changes, the baseline advances to runtime commit
+`2b73992`, protecting its newly gained API successes. The ordinary snapshots
+were regenerated against that pin; all gates pass again. The exploratory full run uses additional proposed source obligations already
 failed by published main; those failures remain recorded and are not waived or
 promoted as passing. This foundation does not resolve flat #210/#211. The broader
 source-boundary candidates still have main regressions and remain separate.
@@ -54,7 +56,7 @@ O(lines × log(cuts)), as documented in [RESEARCH.md](../../RESEARCH.md).
 
 Artifacts under `/private/tmp/pretext-production-20260905`: full native rows and
 pair audits in `published-shared-walker-v4-full-{chrome,safari,firefox}`, final
-ordinary observations in `production-foundation/.artifacts/wrapping/2026-09-06T09-58-30.242Z-260d6702`,
+ordinary observations in `production-foundation/.artifacts/wrapping/2026-09-06T10-13-29.944Z-9c7aae7d`,
 producer proof in `review-foundation-v3/semantics-v5.json`, and benchmark comparison
 in `foundation-v5-timing-comparison.json`. Frozen V5 source matches the final
 production runtime; V4 differs only by the reviewed unreachable-code cleanup.
