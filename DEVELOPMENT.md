@@ -19,7 +19,9 @@ See [the wrapping suite](tests/wrapping/README.md) for worktree comparisons,
 known-failure reporting, native observation limits and reproducible case IDs.
 Its default gate requires the maintained absolute checks and rejects lost baseline
 successes elsewhere; it does not claim zero total incompatibilities. The ordinary
-and full schedules use the same assertions.
+and full schedules use the same assertions. Public API comparisons retain every
+serialized line field, including any selected-break metadata, while comparing
+widths with their existing numeric tolerance.
 
 ### Packaging And Release
 

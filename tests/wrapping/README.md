@@ -51,7 +51,9 @@ Height, extracted line count/boundaries, source placement, whitespace, widths,
 selected hyphens, public API contracts and selected native rich-item heights
 remain separate. `unobserved` and
 `not-applicable` are never passes. Interrupted API groups retain their failures
-and discard partial passes. API agreement does not establish native correctness.
+and discard partial passes. API agreement does not establish native correctness. Line comparisons include all
+serialized returned fields, so agreeing text and source positions cannot hide
+lost break metadata. Widths retain their existing numeric tolerance.
 The numeric companion covers nine environment profiles, prohibits Canvas calls
 after preparation, and retains the unverified-profile TAB compatibility checks.
 

@@ -8,6 +8,57 @@ opposites discovered during review.
 [README.md](README.md) explains the runner; [INVENTORY.md](INVENTORY.md) records
 coverage, provenance and research protocols outside its scope.
 
+## Shared complex line walker
+
+The production foundation starts at published main `cdc34f1`. Complex batch,
+streaming, ranges and statistics now share one decision loop, retaining the
+simple fast path. A later fitting boundary has the same priority over an earlier
+SHY in every API. Line-start normalization also crosses consecutive consumed-only
+chunks without dropping later text or suppressing real empty lines. Preparation,
+measurements, prepared fields and the public API are unchanged.
+
+The full shared inventory comparison covers 656,402 native inputs in Chrome,
+Safari and Firefox, both directions. It removes API disagreement on 19,054 rows
+(6,252 Chrome, 6,214 Safari, 6,588 Firefox), with no lost native accuracy successes
+and identical batch text, widths and cursors. Seven source-conservation diagnostics
+change with corrected streaming; API agreement and exact source partition remain
+separate claims. The normalizer correction preserves every full-run prediction;
+its previously missing counterexample is covered by one small regression test.
+The final cleanup removes only independently proven unreachable code. A further
+4,380 producer-created comparisons preserve batch output and contracts, including
+mutated callbacks, reentrant calls and copied continuations.
+
+All 33,622 ordinary observations pass the final baseline-preservation and maintained
+absolute gates. Nine numeric environment profiles pass too. The final ordinary
+suite hash is `0fd378ba100c1ddbcbb8f2b33a95273fada13fdff195fa76024ad33b22a7302f`.
+The exploratory full run uses additional proposed source obligations already
+failed by published main; those failures remain recorded and are not waived or
+promoted as passing. This foundation does not resolve flat #210/#211. The broader
+source-boundary candidates still have main regressions and remain separate.
+
+Unit tests (174 tests, 1,070 assertions), strict checks, the static site build and
+packed JS/TypeScript consumer checks pass. Three focused regressions protect
+complete returned-line metadata, later hanging boundaries after SHY, and progress
+across consecutive consumed-only chunks. Accuracy, spacing, corpus, benchmark
+snapshots and dashboards were refreshed.
+
+Foreground benchmark snapshots use medians of three page runs against a fresh
+published-source reference. Ordinary layout and the long Arabic rich workload
+stay close to baseline. Pre-wrap stats improve from 0.180 to 0.135 ms in Chrome
+and 0.250 to 0.150 ms in Safari; range walking rises from 0.125 to 0.145 ms and
+0.150 to 0.200 ms respectively. Chrome pre-wrap streaming rises from 0.525 to
+0.570 ms, while Safari remains 0.500 ms. These small absolute stress-case costs
+are retained; the refactor is not a universal speedup. Counted work finds no
+quadratic traversal, but complex preferred-cut searches now cost
+O(lines × log(cuts)), as documented in [RESEARCH.md](../../RESEARCH.md).
+
+Artifacts under `/private/tmp/pretext-production-20260905`: full native rows and
+pair audits in `published-shared-walker-v4-full-{chrome,safari,firefox}`, final
+ordinary observations in `production-foundation/.artifacts/wrapping/2026-09-06T09-58-30.242Z-260d6702`,
+producer proof in `review-foundation-v3/semantics-v5.json`, and benchmark comparison
+in `foundation-v5-timing-comparison.json`. Frozen V5 source matches the final
+production runtime; V4 differs only by the reviewed unreachable-code cleanup.
+
 ## Algorithmic-work audit and repairs
 
 The history/current-code audit repaired three inherited repeated scans:

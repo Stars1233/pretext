@@ -51,9 +51,12 @@ word segment where other runtimes separate them.
 
 A single URL can contain many preferred hyphen breaks and produce many narrow
 lines. Restarting the preferred-break search at zero for every continuation made
-streaming and aggregate rich layout quadratic in that run's length. Batch walking
-already carries the next boundary; arbitrary continuation cursors now seek within
+streaming and aggregate rich layout quadratic in that run's length. The simple batch walk
+carries the next boundary; arbitrary continuation cursors seek within
 the sorted break list without rescanning earlier cuts or adding cursor state.
+The shared complex batch walker currently uses those bounded searches per line,
+so its preferred-cut lookup work is O(lines × log(cuts)), not the simple walker’s
+carried-index bound.
 
 Desktop Firefox resolves CSS box widths to 1/60px.
 A headed DPR 2 sweep of 241 box widths from 35px through 36px matched
@@ -63,6 +66,24 @@ independent signed-spacing and ligature thresholds in the full sweep. Box
 resolution does not establish the inline fit threshold, so the line walkers
 retain their existing width handling. Wider Unicode-affix tailoring likewise
 exposed inherited trailing-space admission failures; it remains unmodeled here.
+
+## One Decision For Complex Line Layout
+
+The complex batch and streaming walkers used different priorities after SHY.
+When a later hanging boundary fit, streaming could rewind to an earlier SHY
+while batch layout consumed the later boundary. The source and geometry were
+already available; duplicating the decision algorithm caused the disagreement.
+Complex batch and streaming layout now use one scan loop with the batch
+priority; streaming stops after one line. Scratch values and helpers belong to
+the whole walk, while ordinary text retains its simple fast path. In the full native
+comparison, this preserves every batch line and browser-accuracy result and
+removes the API disagreements in all three browsers. Exact source partition
+diagnostics remain separate from allowed suppressed-control boundary gaps.
+
+Line-start normalization must cross every consecutive consumed-only chunk before
+returning a start. Skipping just one could make a SHY-only chunk terminate the
+paragraph and drop later visible text. Actual empty hard-break chunks still
+produce empty lines; consumed controls are not substitutes for those chunks.
 
 ## Rich Inline Source Identity And Boundary Spaces
 
